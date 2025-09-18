@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Participant;
 use App\Models\User;
-use App\Models\MatchModel;
+use App\Models\Matches as MatchModel;
 
 class Team extends Model
 {
+    use HasFactory;
     protected $fillable = ['week_label', 'name'];
 
     /**

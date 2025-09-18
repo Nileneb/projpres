@@ -19,11 +19,8 @@ return new class extends Migration
             $t->text('comment')->nullable();
             $t->timestamps();
             $t->unique(['match_id','user_id']);
-            //$t->raw('CHECK (score BETWEEN 1 AND 5)');
-    });
-
-
-
+            // $t->check('score >= 1 AND score <= 5');  // Dies funktioniert in neueren Laravel-Versionen
+        });
     }
 
     /**

@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Matches;
 use App\Models\User;
 
 class Vote extends Model
 {
+    use HasFactory;
     protected $fillable = ['match_id', 'user_id', 'score', 'comment'];
 
     /**
