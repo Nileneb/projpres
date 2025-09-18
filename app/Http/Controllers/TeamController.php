@@ -7,7 +7,16 @@ use Illuminate\Http\Request;
 
 class TeamController extends Controller {
     public function index(){
-        $teams = Team::query()->latest()->paginate(20);
-        return view('teams.index', compact('teams'));
+        // Alle Teams gruppiert nach week_label holen
+        $teams = Team::all();
+        $weekLabels = $teams->pluck('week_label')->unique()->sort()->values()->all();
+
+        // Teams nach Woche gruppieren
+        $teamsByWeek = [];
+        foreach ($weekLabels as $weekLabel) {
+            $teamsByWeek[$weekLabel] = $teams->where('week_label', $weekLabel)->all();
+        }
+
+        return view('teams.index', compact('weekLabels', 'teamsByWeek'));
     }
 }

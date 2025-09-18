@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layouts.app :title="__('Match Details')">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Match Details') }}
@@ -129,4 +129,4 @@
             @endcan
         </div>
     </div>
-</x-app-layout>
+</x-layouts.app>
