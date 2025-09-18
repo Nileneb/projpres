@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Matches;
+use App\Models\Vote;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreVoteRequest;
 
 class VoteController extends Controller {
     public function store(StoreVoteRequest $req, Matches $match){
