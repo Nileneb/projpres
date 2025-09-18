@@ -33,6 +33,12 @@
                                             @php
                                                 $createdMatches = $team->createdMatches->where('week_label', $weekLabel);
                                                 $solvedMatches = $team->solvedMatches->where('week_label', $weekLabel);
+                                                // Check if user is part of this team
+                                                $userInTeam = $team->users->contains(auth()->user());
+                                                // Get other teams from the same week that user can challenge
+                                                $otherTeams = collect($teamsByWeek[$weekLabel])->reject(function($otherTeam) use ($team) {
+                                                    return $otherTeam->id === $team->id;
+                                                });
                                             @endphp
 
                                             @if ($createdMatches->count() > 0 || $solvedMatches->count() > 0)
@@ -55,6 +61,32 @@
                                                 </ul>
                                             @else
                                                 <p class="text-gray-500 italic">No matches yet.</p>
+                                            @endif
+
+                                            @if ($userInTeam && $otherTeams->count() > 0)
+                                                <div class="mt-3">
+                                                    <h5 class="font-medium text-sm text-gray-700 mb-2">Create Challenge:</h5>
+                                                    <div class="flex flex-col space-y-2">
+                                                        @foreach($otherTeams as $otherTeam)
+                                                            @php
+                                                                // Check if we already created a challenge for this team
+                                                                $challengeExists = $createdMatches->contains(function ($match) use ($otherTeam) {
+                                                                    return $match->solver_team_id == $otherTeam->id;
+                                                                });
+                                                            @endphp
+
+                                                            @if(!$challengeExists)
+                                                                <form method="GET" action="{{ route('matches.create') }}">
+                                                                    <input type="hidden" name="solver_team_id" value="{{ $otherTeam->id }}">
+                                                                    <input type="hidden" name="week_label" value="{{ $weekLabel }}">
+                                                                    <button type="submit" class="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700">
+                                                                        Challenge {{ $otherTeam->name }}
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                </div>
                                             @endif
                                         </div>
                                     </div>

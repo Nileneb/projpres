@@ -29,7 +29,16 @@ class MatchPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true; // Basic authorization for creating matches
+    }
+
+    /**
+     * Determine whether the user can create a challenge for a specific week.
+     */
+    public function createChallenge(User $user, string $weekLabel): bool
+    {
+        // Check if the user belongs to a team for this week
+        return $user->teams()->where('week_label', $weekLabel)->exists();
     }
 
     /**

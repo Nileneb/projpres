@@ -25,9 +25,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
 
     // Match routes
+    Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
+    Route::get('/matches/create', [MatchController::class, 'create'])->name('matches.create');
+    Route::post('/matches', [MatchController::class, 'store'])->name('matches.store');
     Route::get('/matches/{match}', [MatchController::class, 'show'])->name('matches.show');
     Route::post('/matches/{match}/challenge', [MatchController::class, 'updateChallenge'])->name('matches.updateChallenge');
-    Route::post('/matches/{match}/submit', [MatchController::class, 'submit'])->name('matches.submit');
+    Route::post('/matches/{match}/start', [MatchController::class, 'start'])->name('matches.start');
+    Route::get('/matches/{match}/submit', [MatchController::class, 'submitForm'])->name('matches.submit');
+    Route::post('/matches/{match}/submit-solution', [MatchController::class, 'submitSolution'])->name('matches.submitSolution');
 
     // Vote routes
     Route::post('/matches/{match}/votes', [VoteController::class, 'store'])->name('votes.store');

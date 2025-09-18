@@ -14,27 +14,31 @@ class Matches extends Model
 
     protected $fillable = [
         'week_label',
-        'creator_team_id',
-        'solver_team_id',
+        'creator_id',
+        'solver_id',
         'challenge_text',
         'time_limit_minutes',
         'submission_url',
+        'started_at',
         'submitted_at',
+        'deadline',
         'status'
     ];
 
     protected $casts = [
-        'submitted_at' => 'datetime'
+        'submitted_at' => 'datetime',
+        'started_at' => 'datetime',
+        'deadline' => 'datetime'
     ];
 
     public function creator()
     {
-        return $this->belongsTo(Team::class, 'creator_team_id');
+        return $this->belongsTo(Team::class, 'creator_id');
     }
 
     public function solver()
     {
-        return $this->belongsTo(Team::class, 'solver_team_id');
+        return $this->belongsTo(Team::class, 'solver_id');
     }
 
     public function votes()
