@@ -63,4 +63,21 @@ class MatchPolicy
     {
         return false;
     }
+
+    /**
+     * Determine whether the user can update the challenge text.
+     */
+    public function updateChallenge(User $u, Matches $m)
+    {
+        return $m->creator->users->contains($u->id); // nur Creator-Team
+    }
+
+    /**
+     * Determine whether the user can submit a solution.
+     */
+    public function submit(User $u, Matches $m)
+    {
+        // nur Solver-Team & Status pending & (optional) Zeitfenster prüfen
+        return $m->solver->users->contains($u->id) && $m->status === 'pending';
+    }
 }

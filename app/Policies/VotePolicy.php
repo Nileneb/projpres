@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Vote;
+use App\Models\Matches;
 use Illuminate\Auth\Access\Response;
 
 class VotePolicy
@@ -27,9 +28,11 @@ class VotePolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Matches $m)
     {
-        return false;
+        $isInCreator = $m->creator->users->contains($user->id);
+        $isInSolver  = $m->solver->users->contains($user->id);
+        return !$isInCreator && !$isInSolver && $m->status === 'submitted';
     }
 
     /**
