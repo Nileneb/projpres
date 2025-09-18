@@ -1,132 +1,149 @@
 <x-layouts.app :title="__('Match Details')">
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Match Details') }}
-        </h2>
-    </x-slot>
+    <div class="space-y-6">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">{{ __('Challenge Information') }}</h2>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        {{ __('Challenge Information') }}
-                    </h2>
+            <div class="space-y-4">
+                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                    <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Challenge Text') }}</h3>
+                    <div class="text-gray-800 dark:text-gray-200">
+                        @if($match->challenge_text)
+                            {{ $match->challenge_text }}
+                        @else
+                            <span class="italic text-gray-600 dark:text-gray-400">No challenge text provided yet.</span>
+                        @endif
+                    </div>
+                </div>
 
-                    <div class="mt-6">
-                        <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                            <h3 class="font-bold">{{ __('Challenge Text') }}</h3>
-                            <div class="mt-2">
-                                {{ $match->challenge_text ?? 'No challenge text provided yet.' }}
-                            </div>
+                @if($match->submission_url)
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Submission URL') }}</h3>
+                        <div>
+                            <a href="{{ $match->submission_url }}" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">
+                                {{ $match->submission_url }}
+                            </a>
                         </div>
-
-                        @if($match->submission_url)
-                            <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                                <h3 class="font-bold">{{ __('Submission URL') }}</h3>
-                                <div class="mt-2">
-                                    <a href="{{ $match->submission_url }}" class="text-blue-500 hover:underline" target="_blank">
-                                        {{ $match->submission_url }}
-                                    </a>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if($match->status === 'submitted')
-                            <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                                <h3 class="font-bold">{{ __('Average Score') }}</h3>
-                                <div class="mt-2">
-                                    {{ $match->avgScore() ?? 'No votes yet' }}
-                                </div>
-                            </div>
-                        @endif
                     </div>
-                </div>
+                @endif
+
+                @if($match->status === 'submitted')
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Average Score') }}</h3>
+                        <div class="text-gray-800 dark:text-gray-200">
+                            {{ $match->avgScore() ?? 'No votes yet' }}
+                        </div>
+                    </div>
+                @endif
             </div>
-
-            @can('updateChallenge', $match)
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <div class="max-w-xl">
-                        <h2 class="text-lg font-medium text-gray-900">
-                            {{ __('Update Challenge') }}
-                        </h2>
-
-                        <form method="POST" action="{{ route('matches.updateChallenge', $match) }}" class="mt-6 space-y-6">
-                            @csrf
-
-                            <div>
-                                <x-input-label for="challenge_text" :value="__('Challenge Text')" />
-                                <x-text-area id="challenge_text" name="challenge_text" class="mt-1 block w-full" rows="6">{{ old('challenge_text', $match->challenge_text) }}</x-text-area>
-                                <x-input-error class="mt-2" :messages="$errors->get('challenge_text')" />
-                            </div>
-
-                            <div class="flex items-center gap-4">
-                                <x-primary-button>{{ __('Update Challenge') }}</x-primary-button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            @endcan
-
-            @can('submit', $match)
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <div class="max-w-xl">
-                        <h2 class="text-lg font-medium text-gray-900">
-                            {{ __('Submit Solution') }}
-                        </h2>
-
-                        <form method="POST" action="{{ route('matches.submit', $match) }}" class="mt-6 space-y-6">
-                            @csrf
-
-                            <div>
-                                <x-input-label for="submission_url" :value="__('Submission URL')" />
-                                <x-text-input id="submission_url" name="submission_url" type="url" class="mt-1 block w-full"
-                                    value="{{ old('submission_url', $match->submission_url) }}" required />
-                                <x-input-error class="mt-2" :messages="$errors->get('submission_url')" />
-                            </div>
-
-                            <div class="flex items-center gap-4">
-                                <x-primary-button>{{ __('Submit Solution') }}</x-primary-button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            @endcan
-
-            @can('create', ['App\Models\Vote', $match])
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <div class="max-w-xl">
-                        <h2 class="text-lg font-medium text-gray-900">
-                            {{ __('Submit Vote') }}
-                        </h2>
-
-                        <form method="POST" action="{{ route('votes.store', $match) }}" class="mt-6 space-y-6">
-                            @csrf
-
-                            <div>
-                                <x-input-label for="score" :value="__('Score (1-5)')" />
-                                <select id="score" name="score" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
-                                    <option value="">Select a score</option>
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <option value="{{ $i }}" {{ old('score') == $i ? 'selected' : '' }}>{{ $i }}</option>
-                                    @endfor
-                                </select>
-                                <x-input-error class="mt-2" :messages="$errors->get('score')" />
-                            </div>
-
-                            <div>
-                                <x-input-label for="comment" :value="__('Comment (Optional)')" />
-                                <x-text-area id="comment" name="comment" class="mt-1 block w-full" rows="3">{{ old('comment') }}</x-text-area>
-                                <x-input-error class="mt-2" :messages="$errors->get('comment')" />
-                            </div>
-
-                            <div class="flex items-center gap-4">
-                                <x-primary-button>{{ __('Submit Vote') }}</x-primary-button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            @endcan
         </div>
+
+        @can('updateChallenge', $match)
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">{{ __('Update Challenge') }}</h2>
+
+                <form method="POST" action="{{ route('matches.updateChallenge', $match) }}" class="space-y-6">
+                    @csrf
+
+                    <div>
+                        <label for="challenge_text" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('Challenge Text') }}
+                        </label>
+                        <textarea 
+                            id="challenge_text"
+                            name="challenge_text" 
+                            rows="6"
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                        >{{ old('challenge_text', $match->challenge_text) }}</textarea>
+                        @error('challenge_text')
+                            <div class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        {{ __('Update Challenge') }}
+                    </button>
+                </form>
+            </div>
+        @endcan
+
+        @can('submit', $match)
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">{{ __('Submit Solution') }}</h2>
+
+                <form method="POST" action="{{ route('matches.submit', $match) }}" class="space-y-6">
+                    @csrf
+
+                    <div>
+                        <label for="submission_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('Submission URL') }}
+                        </label>
+                        <input 
+                            id="submission_url"
+                            name="submission_url" 
+                            type="url" 
+                            value="{{ old('submission_url', $match->submission_url) }}" 
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                        />
+                        @error('submission_url')
+                            <div class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        {{ __('Submit Solution') }}
+                    </button>
+                </form>
+            </div>
+        @endcan
+
+        @can('create', ['App\Models\Vote', $match])
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">{{ __('Submit Vote') }}</h2>
+
+                <form method="POST" action="{{ route('votes.store', $match) }}" class="space-y-6">
+                    @csrf
+
+                    <div>
+                        <label for="score" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('Score (1-5)') }}
+                        </label>
+                        <select 
+                            id="score"
+                            name="score" 
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                        >
+                            <option value="">Select a score</option>
+                            @for ($i = 1; $i <= 5; $i++)
+                                <option value="{{ $i }}" {{ old('score') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                            @endfor
+                        </select>
+                        @error('score')
+                            <div class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="comment" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('Comment (Optional)') }}
+                        </label>
+                        <textarea 
+                            id="comment"
+                            name="comment" 
+                            rows="3"
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                        >{{ old('comment') }}</textarea>
+                        @error('comment')
+                            <div class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        {{ __('Submit Vote') }}
+                    </button>
+                </form>
+            </div>
+        @endcan
     </div>
 </x-layouts.app>
