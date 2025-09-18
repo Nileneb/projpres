@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use App\Models\Participant;
+use App\Models\Team;
+use App\Models\Vote;
 
 class User extends Authenticatable
 {
@@ -48,7 +50,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user's initials
+     * Get the user's initials.
      */
     public function initials(): string
     {
@@ -57,5 +59,29 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    /**
+     * Relationship: User has many participants.
+     */
+    public function participants()
+    {
+        return $this->hasMany(Participant::class);
+    }
+
+    /**
+     * Relationship: User belongs to many teams via participants.
+     */
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'participants');
+    }
+
+    /**
+     * Relationship: User has many votes.
+     */
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
     }
 }
