@@ -12,12 +12,12 @@
                     @forelse ($weekLabels as $weekLabel)
                         <div class="mb-8">
                             <h2 class="text-xl font-bold mb-4">{{ $weekLabel }}</h2>
-                            
+
                             <div class="space-y-4">
                                 @foreach ($teamsByWeek[$weekLabel] as $team)
                                     <div class="border p-4 rounded-lg">
                                         <h3 class="text-lg font-semibold">{{ $team->name }}</h3>
-                                        
+
                                         <div class="mt-4">
                                             <h4 class="font-medium text-sm text-gray-700 mb-2">Team Members:</h4>
                                             <ul class="list-disc ml-5">
@@ -26,15 +26,15 @@
                                                 @endforeach
                                             </ul>
                                         </div>
-                                        
+
                                         <div class="mt-4">
                                             <h4 class="font-medium text-sm text-gray-700 mb-2">Matches:</h4>
-                                            
+
                                             @php
                                                 $createdMatches = $team->createdMatches->where('week_label', $weekLabel);
                                                 $solvedMatches = $team->solvedMatches->where('week_label', $weekLabel);
                                             @endphp
-                                            
+
                                             @if ($createdMatches->count() > 0 || $solvedMatches->count() > 0)
                                                 <ul class="space-y-2">
                                                     @foreach ($createdMatches as $match)
@@ -44,7 +44,7 @@
                                                             </a>
                                                         </li>
                                                     @endforeach
-                                                    
+
                                                     @foreach ($solvedMatches as $match)
                                                         <li>
                                                             <a href="{{ route('matches.show', $match) }}" class="text-blue-600 hover:underline">

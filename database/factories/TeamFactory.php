@@ -17,7 +17,8 @@ class TeamFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'week_label' => $this->faker->regexify('202[5-6]-KW[0-5][1-9]'),
+            'name' => $this->faker->unique()->company()
         ];
     }
 }

@@ -50,16 +50,16 @@
                         <h2 class="text-lg font-medium text-gray-900">
                             {{ __('Update Challenge') }}
                         </h2>
-                        
+
                         <form method="POST" action="{{ route('matches.updateChallenge', $match) }}" class="mt-6 space-y-6">
                             @csrf
-                            
+
                             <div>
                                 <x-input-label for="challenge_text" :value="__('Challenge Text')" />
                                 <x-text-area id="challenge_text" name="challenge_text" class="mt-1 block w-full" rows="6">{{ old('challenge_text', $match->challenge_text) }}</x-text-area>
                                 <x-input-error class="mt-2" :messages="$errors->get('challenge_text')" />
                             </div>
-                            
+
                             <div class="flex items-center gap-4">
                                 <x-primary-button>{{ __('Update Challenge') }}</x-primary-button>
                             </div>
@@ -74,17 +74,17 @@
                         <h2 class="text-lg font-medium text-gray-900">
                             {{ __('Submit Solution') }}
                         </h2>
-                        
+
                         <form method="POST" action="{{ route('matches.submit', $match) }}" class="mt-6 space-y-6">
                             @csrf
-                            
+
                             <div>
                                 <x-input-label for="submission_url" :value="__('Submission URL')" />
-                                <x-text-input id="submission_url" name="submission_url" type="url" class="mt-1 block w-full" 
+                                <x-text-input id="submission_url" name="submission_url" type="url" class="mt-1 block w-full"
                                     value="{{ old('submission_url', $match->submission_url) }}" required />
                                 <x-input-error class="mt-2" :messages="$errors->get('submission_url')" />
                             </div>
-                            
+
                             <div class="flex items-center gap-4">
                                 <x-primary-button>{{ __('Submit Solution') }}</x-primary-button>
                             </div>
@@ -99,10 +99,10 @@
                         <h2 class="text-lg font-medium text-gray-900">
                             {{ __('Submit Vote') }}
                         </h2>
-                        
+
                         <form method="POST" action="{{ route('votes.store', $match) }}" class="mt-6 space-y-6">
                             @csrf
-                            
+
                             <div>
                                 <x-input-label for="score" :value="__('Score (1-5)')" />
                                 <select id="score" name="score" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
@@ -119,7 +119,7 @@
                                 <x-text-area id="comment" name="comment" class="mt-1 block w-full" rows="3">{{ old('comment') }}</x-text-area>
                                 <x-input-error class="mt-2" :messages="$errors->get('comment')" />
                             </div>
-                            
+
                             <div class="flex items-center gap-4">
                                 <x-primary-button>{{ __('Submit Vote') }}</x-primary-button>
                             </div>
