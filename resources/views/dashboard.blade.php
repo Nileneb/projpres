@@ -48,7 +48,7 @@
                     @endforeach
                 </div>
             @else
-                <p class="font-medium text-zinc-800 dark:text-zinc-800">Du bist noch keinem Team zugewiesen.</p>
+
                 <p class="font-medium text-zinc-800 dark:text-white">You are not assigned to any team yet.</p>
             @endif
         </div>
