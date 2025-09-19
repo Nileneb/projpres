@@ -138,9 +138,9 @@
                             @csrf
 
                             <div>
-                                <x-input-label for="challenge_text" :value="__('Challenge Text')" />
-                                <x-text-area id="challenge_text" name="challenge_text" class="mt-1 block w-full" rows="6">{{ old('challenge_text', $match->challenge_text) }}</x-text-area>
-                                <x-input-error class="mt-2" :messages="$errors->get('challenge_text')" />
+                                <x-ui.label for="challenge_text" :value="__('Challenge Text')" />
+                                <x-ui.textarea id="challenge_text" name="challenge_text" class="mt-1 block w-full" rows="6">{{ old('challenge_text', $match->challenge_text) }}</x-ui.textarea>
+                                <x-ui.input-error class="mt-2" :messages="$errors->get('challenge_text')" />
                             </div>
 
                             <div class="flex items-center gap-4">
@@ -162,10 +162,10 @@
                             @csrf
 
                             <div>
-                                <x-input-label for="submission_url" :value="__('Submission URL')" />
-                                <x-text-input id="submission_url" name="submission_url" type="url" class="mt-1 block w-full"
+                                <x-ui.label for="submission_url" :value="__('Submission URL')" />
+                                <x-ui.input id="submission_url" name="submission_url" type="url" class="mt-1 block w-full"
                                     value="{{ old('submission_url', $match->submission_url) }}" required />
-                                <x-input-error class="mt-2" :messages="$errors->get('submission_url')" />
+                                <x-ui.input-error class="mt-2" :messages="$errors->get('submission_url')" />
                             </div>
 
                             <div class="flex items-center gap-4">
@@ -187,20 +187,20 @@
                             @csrf
 
                             <div>
-                                <x-input-label for="score" :value="__('Score (1-5)')" />
+                                <x-ui.label for="score" :value="__('Score (1-5)')" />
                                 <select id="score" name="score" class="mt-1 block w-full border-gray-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                                     <option value="">Select a score</option>
                                     @for ($i = 1; $i <= 5; $i++)
                                         <option value="{{ $i }}" {{ old('score') == $i ? 'selected' : '' }}>{{ $i }}</option>
                                     @endfor
                                 </select>
-                                <x-input-error class="mt-2" :messages="$errors->get('score')" />
+                                <x-ui.input-error class="mt-2" :messages="$errors->get('score')" />
                             </div>
 
                             <div>
-                                <x-input-label for="comment" :value="__('Comment (Optional)')" />
-                                <x-text-area id="comment" name="comment" class="mt-1 block w-full" rows="3">{{ old('comment') }}</x-text-area>
-                                <x-input-error class="mt-2" :messages="$errors->get('comment')" />
+                                <x-ui.label for="comment" :value="__('Comment (Optional)')" />
+                                <x-ui.textarea id="comment" name="comment" class="mt-1 block w-full" rows="3">{{ old('comment') }}</x-ui.textarea>
+                                <x-ui.input-error class="mt-2" :messages="$errors->get('comment')" />
                             </div>
 
                             <div class="flex items-center gap-4">
