@@ -25,10 +25,10 @@
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status:</span>
-                                <span class="ml-1 px-2 py-1 text-xs rounded-full
-                                    @if($match->status == 'pending') bg-yellow-100 text-yellow-800 @endif
-                                    @if($match->status == 'submitted') bg-green-100 text-green-800 @endif
-                                    @if($match->status == 'closed') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 @endif
+                                <span class="ml-1 status-badge
+                                    @if($match->status == 'pending') status-pending @endif
+                                    @if($match->status == 'submitted') status-submitted @endif
+                                    @if($match->status == 'closed') status-closed @endif
                                 ">{{ ucfirst($match->status) }}</span>
                             </div>
                         </div>
