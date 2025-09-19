@@ -15,6 +15,17 @@
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     Dashboard
                 </flux:navbar.item>
+                <flux:navbar.item icon="trophy" :href="route('matches.index')" :current="request()->routeIs('matches.*')" wire:navigate>
+                    Challenges
+                </flux:navbar.item>
+                <flux:navbar.item icon="users" :href="route('teams.assignments')" :current="request()->routeIs('teams.*')" wire:navigate>
+                    Teams
+                </flux:navbar.item>
+                @can('manage-teams')
+                    <flux:navbar.item icon="sparkles" :href="route('teams.generate')" :current="request()->routeIs('teams.generate')" wire:navigate>
+                        Teams generieren
+                    </flux:navbar.item>
+                @endcan
             </flux:navbar>
 
             <flux:spacer />
@@ -101,6 +112,17 @@
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     Dashboard
                     </flux:navlist.item>
+                    <flux:navlist.item icon="trophy" :href="route('matches.index')" :current="request()->routeIs('matches.*')" wire:navigate>
+                    Challenges
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="users" :href="route('teams.assignments')" :current="request()->routeIs('teams.*')" wire:navigate>
+                    Teams
+                    </flux:navlist.item>
+                    @can('manage-teams')
+                    <flux:navlist.item icon="sparkles" :href="route('teams.generate')" :current="request()->routeIs('teams.generate')" wire:navigate>
+                    Teams generieren
+                    </flux:navlist.item>
+                    @endcan
                 </flux:navlist.group>
             </flux:navlist>
 

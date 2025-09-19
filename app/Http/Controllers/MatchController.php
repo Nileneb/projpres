@@ -40,12 +40,25 @@ class MatchController extends Controller {
             'time_limit_minutes' => 'required|integer|min:1|max:60',
             'week_label' => 'required|string'
         ]);
-
+        
         // Finde das Team des aktuellen Benutzers für die angegebene Woche
         $creatorTeam = auth()->user()->teams()
             ->where('week_label', $validated['week_label'])
             ->firstOrFail();
-
+            
+        // Team-Zuweisung Service laden
+        $teamAssignmentService = app(App\Services\TeamAssignmentService::class);
+        
+        // Prüfen, ob das Team bereits eine Challenge erstellt hat
+        if ($teamAssignmentService->hasTeamCreatedChallengeForWeek($creatorTeam->id, $validated['week_label'])) {
+            return back()->with('error', 'Dein Team hat bereits eine Challenge für diese Woche erstellt.');
+        }
+        
+        // Prüfen, ob das Zielteam bereits eine Challenge erhalten hat
+        if ($teamAssignmentService->hasTeamReceivedChallengeForWeek($validated['solver_team_id'], $validated['week_label'])) {
+            return back()->with('error', 'Dieses Team hat bereits eine Challenge für diese Woche erhalten.');
+        }
+        
         // Create the challenge
         $match = Matches::create([
             'week_label' => $validated['week_label'],
@@ -54,9 +67,7 @@ class MatchController extends Controller {
             'challenge_text' => $validated['challenge_text'],
             'time_limit_minutes' => $validated['time_limit_minutes'],
             'status' => 'created'
-        ]);
-
-        return redirect()->route('matches.index')
+        ]);        return redirect()->route('matches.index')
             ->with('success', 'Challenge created successfully!');
     }
 
@@ -111,6 +122,14 @@ class MatchController extends Controller {
 
         if (!$isInSolverTeam) {
             abort(403, 'You are not authorized to submit a solution for this challenge');
+        }
+        
+        // Team-Zuweisung Service laden
+        $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
+        
+        // Prüfen, ob das Team bereits eine Challenge gelöst hat
+        if ($teamAssignmentService->hasTeamSolvedChallengeForWeek($match->solver_id, $match->week_label)) {
+            return back()->with('error', 'Dein Team hat bereits eine Challenge für diese Woche gelöst.');
         }
 
         $validated = $request->validate([

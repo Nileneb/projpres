@@ -20,7 +20,7 @@
                         <div>
                             <x-input-label for="submission_url" :value="__('Submission URL')" />
                             <x-text-input id="submission_url" class="block mt-1 w-full" type="url" name="submission_url" :value="old('submission_url')" required />
-                            <p class="mt-1 text-sm text-gray-500">Provide a URL to your solution (e.g., YouTube video, GitHub repository, etc.)</p>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Provide a URL to your solution (e.g., YouTube video, GitHub repository, etc.)</p>
                             <x-input-error :messages="$errors->get('submission_url')" class="mt-2" />
                         </div>
 

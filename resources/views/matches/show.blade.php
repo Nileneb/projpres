@@ -1,6 +1,6 @@
 <x-layouts.app :title="__('Match Details')">
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Match Details') }}
         </h2>
     </x-slot>
@@ -16,19 +16,19 @@
                     <div class="mt-6">
                         <div class="flex justify-between items-center mb-4">
                             <div>
-                                <span class="text-sm font-medium text-gray-500">Creator:</span>
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Creator:</span>
                                 <span class="ml-1">{{ $match->creator->name }}</span>
                             </div>
                             <div>
-                                <span class="text-sm font-medium text-gray-500">Solver:</span>
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Solver:</span>
                                 <span class="ml-1">{{ $match->solver->name }}</span>
                             </div>
                             <div>
-                                <span class="text-sm font-medium text-gray-500">Status:</span>
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status:</span>
                                 <span class="ml-1 px-2 py-1 text-xs rounded-full
                                     @if($match->status == 'pending') bg-yellow-100 text-yellow-800 @endif
                                     @if($match->status == 'submitted') bg-green-100 text-green-800 @endif
-                                    @if($match->status == 'closed') bg-gray-100 text-gray-800 @endif
+                                    @if($match->status == 'closed') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 @endif
                                 ">{{ ucfirst($match->status) }}</span>
                             </div>
                         </div>
@@ -36,7 +36,7 @@
                         <div class="bg-gray-100 p-4 rounded-lg mb-4">
                             <div class="flex justify-between items-center">
                                 <h3 class="font-bold">{{ __('Challenge Description') }}</h3>
-                                <span class="text-sm text-gray-500">Time Limit: {{ $match->time_limit_minutes }} minutes</span>
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Time Limit: {{ $match->time_limit_minutes }} minutes</span>
                             </div>
                             <div class="mt-2 whitespace-pre-line">
                                 {{ $match->challenge_text ?? 'No challenge text provided yet.' }}

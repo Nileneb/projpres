@@ -1,15 +1,15 @@
 <x-layouts.app :title="__('Create Challenge')">
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Create New Challenge') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="p-4 sm:p-8 bg-white dark:bg-zinc-800 shadow sm:rounded-lg">
                 <div class="max-w-xl">
-                    <h2 class="text-lg font-medium text-gray-900">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                         {{ __('Create Challenge for Team: ') }} {{ $solverTeam->name }}
                     </h2>
 
@@ -22,7 +22,7 @@
                             <x-input-label for="challenge_text" :value="__('Challenge Description')" />
                             <x-text-area id="challenge_text" name="challenge_text" class="mt-1 block w-full" rows="6"
                                 placeholder="Describe your challenge here. Be clear and specific about what the other team needs to accomplish.">{{ old('challenge_text') }}</x-text-area>
-                            <p class="text-sm text-gray-500 mt-1">This team will have {{ $timeLimit }} minutes to complete this challenge.</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">This team will have {{ $timeLimit }} minutes to complete this challenge.</p>
                             <x-input-error class="mt-2" :messages="$errors->get('challenge_text')" />
                         </div>
 
@@ -35,7 +35,7 @@
 
                         <div class="flex items-center gap-4">
                             <x-primary-button>{{ __('Create Challenge') }}</x-primary-button>
-                            <a href="{{ route('teams.index') }}" class="text-gray-600 hover:text-gray-900">{{ __('Cancel') }}</a>
+                            <a href="{{ route('teams.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">{{ __('Cancel') }}</a>
                         </div>
                     </form>
                 </div>

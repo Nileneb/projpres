@@ -16,13 +16,13 @@
                     @if($matches->count() > 0)
                         <div class="space-y-6">
                             @foreach($matches as $match)
-                                <div class="bg-white border rounded-lg shadow-sm p-6">
+                                <div class="bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-lg shadow-sm p-6">
                                     <div class="flex justify-between items-start">
                                         <div>
                                             <div class="text-lg font-bold mb-2">
                                                 {{ $match->creator->name }} vs {{ $match->solver->name }}
                                             </div>
-                                            <div class="text-gray-700 mb-4">
+                                            <div class="text-gray-700 dark:text-gray-300 mb-4">
                                                 <p class="font-semibold">Challenge:</p>
                                                 <p class="mb-2">{{ $match->challenge_text }}</p>
 
@@ -41,7 +41,7 @@
                                                         @endif
                                                     </p>
                                                 @elseif($match->status == 'created')
-                                                    <p class="text-gray-600">
+                                                    <p class="text-gray-600 dark:text-gray-400">
                                                         <span class="font-semibold">Status:</span> Not Started
                                                         @if($match->solver_id == auth()->user()->team_id)
                                                             <form method="POST" action="{{ route('matches.start', $match) }}" class="inline">
@@ -82,7 +82,7 @@
 
                                             @if($match->votes->count() > 0)
                                                 <div class="mt-2 text-right">
-                                                    <span class="text-gray-700">
+                                                    <span class="text-gray-700 dark:text-gray-300">
                                                         Average Rating: {{ number_format($match->votes->avg('score'), 1) }}/5
                                                         ({{ $match->votes->count() }} votes)
                                                     </span>
@@ -95,7 +95,7 @@
                         </div>
                     @else
                         <div class="text-center py-8">
-                            <p class="text-gray-600">No challenges yet.</p>
+                            <p class="text-gray-600 dark:text-gray-400">No challenges yet.</p>
                             <p class="mt-2">
                                 <a href="{{ route('matches.create') }}" class="text-blue-600 hover:underline">
                                     Create your first challenge
