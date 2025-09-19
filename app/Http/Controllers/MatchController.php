@@ -42,12 +42,13 @@ class MatchController extends Controller {
         ]);
 
         // Finde das Team des aktuellen Benutzers für die angegebene Woche
-        $creatorTeam = auth()->user()->teams()
+        $user = request()->user();
+        $creatorTeam = $user->teams()
             ->where('week_label', $validated['week_label'])
             ->firstOrFail();
 
         // Team-Zuweisung Service laden
-        $teamAssignmentService = app(App\Services\TeamAssignmentService::class);
+        $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
 
         // Prüfen, ob das Team bereits eine Challenge erstellt hat
         if ($teamAssignmentService->hasTeamCreatedChallengeForWeek($creatorTeam->id, $validated['week_label'])) {
@@ -72,14 +73,17 @@ class MatchController extends Controller {
     }
 
     public function updateChallenge(UpdateChallengeRequest $req, Matches $match){
-        $this->authorize('updateChallenge', $match);
+        if (!\Illuminate\Support\Facades\Gate::allows('updateChallenge', $match)) {
+            abort(403, 'Unauthorized action.');
+        }
         $match->update(['challenge_text'=>$req->validated()['challenge_text']]);
         return back()->with('success','Challenge updated');
     }
 
     public function start(Matches $match) {
         // Ensure the current user is from the solver team
-        $isInSolverTeam = auth()->user()->teams()
+        $user = request()->user();
+        $isInSolverTeam = $user->teams()
             ->where('teams.id', $match->solver_team_id)
             ->where('week_label', $match->week_label)
             ->exists();
@@ -101,7 +105,8 @@ class MatchController extends Controller {
 
     public function submitForm(Matches $match) {
         // Ensure the current user is from the solver team
-        $isInSolverTeam = auth()->user()->teams()
+        $user = request()->user();
+        $isInSolverTeam = $user->teams()
             ->where('teams.id', $match->solver_team_id)
             ->where('week_label', $match->week_label)
             ->exists();
@@ -115,7 +120,8 @@ class MatchController extends Controller {
 
     public function submitSolution(Request $request, Matches $match) {
         // Ensure the current user is from the solver team
-        $isInSolverTeam = auth()->user()->teams()
+        $user = request()->user();
+        $isInSolverTeam = $user->teams()
             ->where('teams.id', $match->solver_team_id)
             ->where('week_label', $match->week_label)
             ->exists();

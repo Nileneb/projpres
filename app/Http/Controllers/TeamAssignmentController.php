@@ -16,7 +16,8 @@ class TeamAssignmentController extends Controller
     public function __construct(TeamAssignmentService $teamAssignmentService)
     {
         $this->teamAssignmentService = $teamAssignmentService;
-        $this->middleware(['auth', 'can:manage-teams']);
+        // To apply middleware, use in routes file instead of controller constructor:
+        // Route::middleware(['auth', 'can:manage-teams'])->group(function () { ... });
     }
 
     /**
