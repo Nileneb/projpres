@@ -34,7 +34,7 @@
                         </div>
 
                         <div class="flex items-center gap-4">
-                            <x-primary-button>{{ __('Create Challenge') }}</x-primary-button>
+                            <x-ui.button>{{ __('Create Challenge') }}</x-ui.button>
                             <a href="{{ route('teams.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">{{ __('Cancel') }}</a>
                         </div>
                     </form>

@@ -25,9 +25,9 @@
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <x-primary-button class="ml-4">
+                            <x-ui.button class="ml-4">
                                 {{ __('Submit Solution') }}
-                            </x-primary-button>
+                            </x-ui.button>
                         </div>
                     </form>
                 </div>

@@ -144,7 +144,7 @@
                             </div>
 
                             <div class="flex items-center gap-4">
-                                <x-primary-button>{{ __('Update Challenge') }}</x-primary-button>
+                                <x-ui.button>{{ __('Update Challenge') }}</x-ui.button>
                             </div>
                         </form>
                     </div>
@@ -169,7 +169,7 @@
                             </div>
 
                             <div class="flex items-center gap-4">
-                                <x-primary-button>{{ __('Submit Solution') }}</x-primary-button>
+                                <x-ui.button>{{ __('Submit Solution') }}</x-ui.button>
                             </div>
                         </form>
                     </div>
@@ -204,7 +204,7 @@
                             </div>
 
                             <div class="flex items-center gap-4">
-                                <x-primary-button>{{ __('Submit Vote') }}</x-primary-button>
+                                <x-ui.button>{{ __('Submit Vote') }}</x-ui.button>
                             </div>
                         </form>
                     </div>

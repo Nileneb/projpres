@@ -40,9 +40,9 @@
                         @endif
 
                         <div class="flex items-center">
-                            <x-button>
+                            <x-ui.button>
                                 Teams generieren
-                            </x-button>
+                            </x-ui.button>
                         </div>
                     </form>
                 </div>
