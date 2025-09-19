@@ -11,7 +11,7 @@
                         <h3 class="text-lg font-bold mb-2">Challenge Details:</h3>
                         <p><span class="font-medium">From:</span> {{ $match->creator->name }}</p>
                         <p><span class="font-medium">To:</span> {{ $match->solver->name }}</p>
-                        <p class="mt-2 p-4 bg-gray-100 rounded-md">{{ $match->challenge_text }}</p>
+                        <p class="mt-2 p-4 bg-gray-100 dark:bg-zinc-700 text-gray-800 dark:text-gray-200 rounded-md">{{ $match->challenge_text }}</p>
                     </div>
 
                     <form method="POST" action="{{ route('matches.submitSolution', $match) }}" class="mt-6">

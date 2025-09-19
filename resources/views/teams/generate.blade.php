@@ -47,13 +47,13 @@
                     </form>
                 </div>
             </div>
-            
+
             <div class="mt-6 overflow-hidden bg-white shadow-sm dark:bg-zinc-800 sm:rounded-lg">
                 <div class="p-6">
                     <h3 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">
                         Verfügbare Benutzer: {{ count($users) }}
                     </h3>
-                    
+
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                         @foreach($users as $user)
                             <div class="p-3 border border-gray-200 rounded-md dark:border-zinc-700">

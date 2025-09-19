@@ -16,15 +16,8 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         // Erstelle Test-User
-        $testUser = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
-        $this->call(DemoSeeder::class);
-
-        // Stelle sicher, dass Test-User einem Team zugewiesen ist
-        $this->assignTeamToTestUser($testUser);
+        // Use TestDataSeeder instead of individual user creation
+        $this->call(TestDataSeeder::class);
     }
 
     /**

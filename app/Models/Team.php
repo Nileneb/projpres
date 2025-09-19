@@ -34,7 +34,7 @@ class Team extends Model
      */
     public function createdMatches()
     {
-        return $this->hasMany(MatchModel::class, 'creator_id');
+        return $this->hasMany(MatchModel::class, 'creator_team_id');
     }
 
     /**
@@ -42,6 +42,6 @@ class Team extends Model
      */
     public function solvedMatches()
     {
-        return $this->hasMany(MatchModel::class, 'solver_id');
+        return $this->hasMany(MatchModel::class, 'solver_team_id');
     }
 }

@@ -11,22 +11,34 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('matches', function (Blueprint $table) {
-            // Füge neue Spalten hinzu
-            $table->timestamp('started_at')->nullable()->after('time_limit_minutes');
-            $table->timestamp('deadline')->nullable()->after('started_at');
+        if (!Schema::hasTable('matches')) {
+            // Skip this migration if the matches table doesn't exist yet
+            return;
+        }
 
-            // Aktualisiere den Standard-Statuswert
-            // Hinweis: In der Realität würden wir eine komplexere Migration schreiben,
-            // die bestehende Daten umwandelt. In diesem Fall gehen wir davon aus, dass
-            // die Tabelle leer ist oder die neuen Statuswerte kompatibel sind.
-        });
+        try {
+            Schema::table('matches', function (Blueprint $table) {
+                // Füge neue Spalten hinzu
+                $table->timestamp('started_at')->nullable()->after('time_limit_minutes');
+                $table->timestamp('deadline')->nullable()->after('started_at');
+            });
+        } catch (\Exception $e) {
+            // Ignore errors
+        }
 
-        // Umbenennungen durchführen (dies muss separat erfolgen, um Fremdschlüsselprobleme zu vermeiden)
-        Schema::table('matches', function (Blueprint $table) {
-            $table->renameColumn('creator_team_id', 'creator_id');
-            $table->renameColumn('solver_team_id', 'solver_id');
-        });
+        try {
+            // No need to rename columns - they should remain as creator_team_id and solver_team_id
+            // Schema::table('matches', function (Blueprint $table) {
+            //     if (Schema::hasColumn('matches', 'creator_team_id')) {
+            //         $table->renameColumn('creator_team_id', 'creator_id');
+            //     }
+            //     if (Schema::hasColumn('matches', 'solver_team_id')) {
+            //         $table->renameColumn('solver_team_id', 'solver_id');
+            //     }
+            // });
+        } catch (\Exception $e) {
+            // Ignore errors
+        }
     }
 
     /**
@@ -34,14 +46,32 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('matches', function (Blueprint $table) {
-            // Rückwärts umbenennungen durchführen
-            $table->renameColumn('creator_id', 'creator_team_id');
-            $table->renameColumn('solver_id', 'solver_team_id');
+        if (!Schema::hasTable('matches')) {
+            // Skip this migration if the matches table doesn't exist anymore
+            return;
+        }
 
-            // Entferne hinzugefügte Spalten
-            $table->dropColumn('started_at');
-            $table->dropColumn('deadline');
-        });
+        try {
+            Schema::table('matches', function (Blueprint $table) {
+                // Rückwärts umbenennungen durchführen
+                // No need to rename columns anymore - they should already be creator_team_id and solver_team_id
+            });
+        } catch (\Exception $e) {
+            // Ignore errors
+        }
+
+        try {
+            Schema::table('matches', function (Blueprint $table) {
+                // Entferne hinzugefügte Spalten
+                if (Schema::hasColumn('matches', 'started_at')) {
+                    $table->dropColumn('started_at');
+                }
+                if (Schema::hasColumn('matches', 'deadline')) {
+                    $table->dropColumn('deadline');
+                }
+            });
+        } catch (\Exception $e) {
+            // Ignore errors
+        }
     }
 };

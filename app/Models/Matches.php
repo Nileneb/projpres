@@ -14,8 +14,8 @@ class Matches extends Model
 
     protected $fillable = [
         'week_label',
-        'creator_id',
-        'solver_id',
+        'creator_team_id',
+        'solver_team_id',
         'challenge_text',
         'time_limit_minutes',
         'submission_url',
@@ -33,12 +33,12 @@ class Matches extends Model
 
     public function creator()
     {
-        return $this->belongsTo(Team::class, 'creator_id');
+        return $this->belongsTo(Team::class, 'creator_team_id');
     }
 
     public function solver()
     {
-        return $this->belongsTo(Team::class, 'solver_id');
+        return $this->belongsTo(Team::class, 'solver_team_id');
     }
 
     public function votes()

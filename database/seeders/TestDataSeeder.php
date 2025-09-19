@@ -38,7 +38,7 @@ class TestDataSeeder extends Seeder
 
         // Aktuelle Woche festlegen
         $weekLabel = '2025-KW38';
-        
+
         // Teams erstellen
         $this->command->info('Creating teams for week ' . $weekLabel);
         $team1 = Team::create(['week_label' => $weekLabel, 'name' => 'Team Alpha']);
@@ -65,34 +65,34 @@ class TestDataSeeder extends Seeder
 
         // Beispiel-Challenges erstellen
         $this->command->info('Creating sample challenges...');
-        
+
         // Team1 fordert Team2 heraus
         MatchModel::create([
             'week_label' => $weekLabel,
-            'creator_id' => $team1->id,
-            'solver_id' => $team2->id,
+            'creator_team_id' => $team1->id,
+            'solver_team_id' => $team2->id,
             'challenge_text' => 'Erstellt ein kurzes Video (max. 1 Minute), das eure Teamdynamik zeigt.',
             'time_limit_minutes' => 20,
             'status' => $statuses[0], // created
         ]);
-        
+
         // Team2 fordert Team3 heraus (in progress)
         $match2 = MatchModel::create([
             'week_label' => $weekLabel,
-            'creator_id' => $team2->id,
-            'solver_id' => $team3->id,
+            'creator_team_id' => $team2->id,
+            'solver_team_id' => $team3->id,
             'challenge_text' => 'Schreibt einen Rap-Text über euer Projekt in mindestens 8 Zeilen.',
             'time_limit_minutes' => 15,
             'status' => $statuses[1], // in_progress
             'started_at' => now()->subMinutes(5),
             'deadline' => now()->addMinutes(10),
         ]);
-        
+
         // Team3 fordert Team1 heraus (abgeschlossen)
         $match3 = MatchModel::create([
             'week_label' => $weekLabel,
-            'creator_id' => $team3->id,
-            'solver_id' => $team1->id,
+            'creator_team_id' => $team3->id,
+            'solver_team_id' => $team1->id,
             'challenge_text' => 'Erstellt ein Meme zu eurem Projektfortschritt.',
             'time_limit_minutes' => 10,
             'status' => $statuses[2], // completed

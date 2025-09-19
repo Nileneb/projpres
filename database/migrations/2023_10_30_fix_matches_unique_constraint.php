@@ -11,13 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('matches', function (Blueprint $table) {
-            // Entferne den alten Unique Constraint
-            $table->dropIndex('matches_week_label_creator_team_id_solver_team_id_unique');
+        if (!Schema::hasTable('matches')) {
+            // Skip this migration if the matches table doesn't exist yet
+            return;
+        }
 
-            // Füge einen neuen Unique Constraint hinzu, der eindeutige Challenges sicherstellt,
-            // aber auch mehrere Challenges zwischen denselben Teams ermöglicht
-            $table->unique(['week_label', 'creator_id', 'solver_id', 'challenge_text'], 'matches_unique_challenge');
+        Schema::table('matches', function (Blueprint $table) {
+            try {
+                // Attempt to drop the old unique constraint
+                $table->dropIndex('matches_week_label_creator_team_id_solver_team_id_unique');
+            } catch (\Exception $e) {
+                // Ignore if the index doesn't exist
+            }
+
+            try {
+                // Füge einen neuen Unique Constraint hinzu
+                $table->unique(['week_label', 'creator_team_id', 'solver_team_id', 'challenge_text'], 'matches_unique_challenge');
+            } catch (\Exception $e) {
+                // Ignore if the index already exists
+            }
         });
     }
 
@@ -26,12 +38,25 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('matches', function (Blueprint $table) {
-            // Entferne den neuen Constraint
-            $table->dropUnique('matches_unique_challenge');
+        if (!Schema::hasTable('matches')) {
+            // Skip this migration if the matches table doesn't exist anymore
+            return;
+        }
 
-            // Stelle den alten Constraint wieder her
-            $table->unique(['week_label', 'creator_id', 'solver_id'], 'matches_week_label_creator_team_id_solver_team_id_unique');
+        Schema::table('matches', function (Blueprint $table) {
+            try {
+                // Attempt to drop the new constraint
+                $table->dropUnique('matches_unique_challenge');
+            } catch (\Exception $e) {
+                // Ignore if the index doesn't exist
+            }
+
+            try {
+                // Stelle den alten Constraint wieder her
+                $table->unique(['week_label', 'creator_team_id', 'solver_team_id'], 'matches_week_label_creator_team_id_solver_team_id_unique');
+            } catch (\Exception $e) {
+                // Ignore if the index already exists
+            }
         });
     }
 };

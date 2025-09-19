@@ -7,9 +7,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="p-4 sm:p-8 bg-white dark:bg-zinc-800 shadow sm:rounded-lg">
                 <div class="max-w-xl">
-                    <h2 class="text-lg font-medium text-gray-900">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-white">
                         {{ __('Challenge Information') }}
                     </h2>
 
@@ -17,11 +17,11 @@
                         <div class="flex justify-between items-center mb-4">
                             <div>
                                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Creator:</span>
-                                <span class="ml-1">{{ $match->creator->name }}</span>
+                                <span class="ml-1 text-gray-800 dark:text-gray-200">{{ $match->creator->name }}</span>
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Solver:</span>
-                                <span class="ml-1">{{ $match->solver->name }}</span>
+                                <span class="ml-1 text-gray-800 dark:text-gray-200">{{ $match->solver->name }}</span>
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status:</span>
@@ -33,26 +33,26 @@
                             </div>
                         </div>
 
-                        <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                        <div class="bg-gray-100 dark:bg-zinc-700 p-4 rounded-lg mb-4">
                             <div class="flex justify-between items-center">
-                                <h3 class="font-bold">{{ __('Challenge Description') }}</h3>
+                                <h3 class="font-bold text-gray-900 dark:text-white">{{ __('Challenge Description') }}</h3>
                                 <span class="text-sm text-gray-500 dark:text-gray-400">Time Limit: {{ $match->time_limit_minutes }} minutes</span>
                             </div>
-                            <div class="mt-2 whitespace-pre-line">
+                            <div class="mt-2 whitespace-pre-line text-gray-800 dark:text-gray-200">
                                 {{ $match->challenge_text ?? 'No challenge text provided yet.' }}
                             </div>
                         </div>
 
                         @if($match->submission_url)
-                            <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                            <div class="bg-gray-100 dark:bg-zinc-700 p-4 rounded-lg mb-4">
                                 <div class="flex justify-between items-center">
-                                    <h3 class="font-bold">{{ __('Submission URL') }}</h3>
+                                    <h3 class="font-bold text-gray-900 dark:text-white">{{ __('Submission URL') }}</h3>
                                     @if($match->submitted_at)
-                                        <span class="text-sm text-gray-500">Submitted on: {{ $match->submitted_at->format('M d, Y H:i') }}</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Submitted on: {{ $match->submitted_at->format('M d, Y H:i') }}</span>
                                     @endif
                                 </div>
                                 <div class="mt-2">
-                                    <a href="{{ $match->submission_url }}" class="text-blue-500 hover:underline flex items-center" target="_blank">
+                                    <a href="{{ $match->submission_url }}" class="text-blue-500 dark:text-blue-400 hover:underline flex items-center" target="_blank">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                         </svg>
@@ -63,8 +63,8 @@
                         @endif
 
                         @if($match->status === 'submitted')
-                            <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                                <h3 class="font-bold">{{ __('Average Score') }}</h3>
+                            <div class="bg-gray-100 dark:bg-zinc-700 p-4 rounded-lg mb-4">
+                                <h3 class="font-bold text-gray-900 dark:text-white">{{ __('Average Score') }}</h3>
                                 <div class="mt-2 flex items-center">
                                     @php
                                         $avgScore = $match->avgScore() ?: 0;
@@ -93,18 +93,18 @@
                                         @endfor
                                     </div>
 
-                                    <span class="ml-2 text-lg font-bold">{{ number_format($avgScore, 1) }}</span>
-                                    <span class="ml-2 text-gray-500">({{ $match->votes->count() }} votes)</span>
+                                    <span class="ml-2 text-lg font-bold text-gray-800 dark:text-gray-200">{{ number_format($avgScore, 1) }}</span>
+                                    <span class="ml-2 text-gray-500 dark:text-gray-400">({{ $match->votes->count() }} votes)</span>
                                 </div>
                             </div>
 
-                            <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                                <h3 class="font-bold">{{ __('Recent Votes') }}</h3>
+                            <div class="bg-gray-100 dark:bg-zinc-700 p-4 rounded-lg mb-4">
+                                <h3 class="font-bold text-gray-900 dark:text-white">{{ __('Recent Votes') }}</h3>
                                 <div class="mt-2 space-y-3">
                                     @forelse ($match->votes->take(3) as $vote)
                                         <div class="border-b pb-2 last:border-0">
                                             <div class="flex justify-between items-center">
-                                                <span class="font-medium">{{ $vote->user->name }}</span>
+                                                <span class="font-medium text-gray-800 dark:text-gray-200">{{ $vote->user->name }}</span>
                                                 <div class="flex text-yellow-400">
                                                     @for ($i = 0; $i < $vote->score; $i++)
                                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -114,11 +114,11 @@
                                                 </div>
                                             </div>
                                             @if ($vote->comment)
-                                                <p class="text-sm text-gray-600 mt-1">{{ $vote->comment }}</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">{{ $vote->comment }}</p>
                                             @endif
                                         </div>
                                     @empty
-                                        <p class="text-gray-500 italic">No votes yet.</p>
+                                        <p class="text-gray-500 dark:text-gray-400 italic">No votes yet.</p>
                                     @endforelse
                                 </div>
                             </div>
@@ -128,9 +128,9 @@
             </div>
 
             @can('updateChallenge', $match)
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="p-4 sm:p-8 bg-white dark:bg-zinc-800 shadow sm:rounded-lg">
                     <div class="max-w-xl">
-                        <h2 class="text-lg font-medium text-gray-900">
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-white">
                             {{ __('Update Challenge') }}
                         </h2>
 
@@ -152,9 +152,9 @@
             @endcan
 
             @can('submit', $match)
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="p-4 sm:p-8 bg-white dark:bg-zinc-800 shadow sm:rounded-lg">
                     <div class="max-w-xl">
-                        <h2 class="text-lg font-medium text-gray-900">
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-white">
                             {{ __('Submit Solution') }}
                         </h2>
 
@@ -177,9 +177,9 @@
             @endcan
 
             @can('create', ['App\Models\Vote', $match])
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="p-4 sm:p-8 bg-white dark:bg-zinc-800 shadow sm:rounded-lg">
                     <div class="max-w-xl">
-                        <h2 class="text-lg font-medium text-gray-900">
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-white">
                             {{ __('Submit Vote') }}
                         </h2>
 
@@ -188,7 +188,7 @@
 
                             <div>
                                 <x-input-label for="score" :value="__('Score (1-5)')" />
-                                <select id="score" name="score" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                <select id="score" name="score" class="mt-1 block w-full border-gray-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                                     <option value="">Select a score</option>
                                     @for ($i = 1; $i <= 5; $i++)
                                         <option value="{{ $i }}" {{ old('score') == $i ? 'selected' : '' }}>{{ $i }}</option>

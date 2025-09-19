@@ -23,7 +23,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Team routes
     Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
-    
+
     // Team assignment routes
     Route::get('/teams/generate', [App\Http\Controllers\TeamAssignmentController::class, 'index'])
         ->middleware(['can:manage-teams'])

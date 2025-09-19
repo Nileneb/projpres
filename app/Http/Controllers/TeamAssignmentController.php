@@ -12,13 +12,13 @@ use Illuminate\Support\Facades\DB;
 class TeamAssignmentController extends Controller
 {
     protected $teamAssignmentService;
-    
+
     public function __construct(TeamAssignmentService $teamAssignmentService)
     {
         $this->teamAssignmentService = $teamAssignmentService;
         $this->middleware(['auth', 'can:manage-teams']);
     }
-    
+
     /**
      * Zeigt die Formular-Ansicht zum Generieren neuer Teams
      */
@@ -26,13 +26,13 @@ class TeamAssignmentController extends Controller
     {
         $currentWeekLabel = $this->teamAssignmentService->getCurrentWeekLabel();
         $users = User::all();
-        
+
         // Prüfen, ob es bereits Teams für diese Woche gibt
         $existingTeams = Team::where('week_label', $currentWeekLabel)->count();
-        
+
         return view('teams.generate', compact('currentWeekLabel', 'users', 'existingTeams'));
     }
-    
+
     /**
      * Generiert neue Teams für die angegebene Woche
      */
@@ -42,35 +42,35 @@ class TeamAssignmentController extends Controller
             'week_label' => 'required|string',
             'team_size' => 'required|integer|min:2|max:10',
         ]);
-        
+
         // Überprüfen, ob bereits Teams für diese Woche existieren
         $existingTeams = Team::where('week_label', $validated['week_label'])->exists();
-        
+
         if ($existingTeams && !$request->has('force')) {
             return back()->with('error', 'Für diese Woche existieren bereits Teams. Markiere "Bestehende Teams überschreiben", um fortzufahren.');
         }
-        
+
         DB::beginTransaction();
-        
+
         try {
             // Wenn "force" aktiviert ist, lösche alle bestehenden Teams für diese Woche
             if ($request->has('force')) {
                 // Finde alle Team-IDs für diese Woche
                 $teamIds = Team::where('week_label', $validated['week_label'])->pluck('id')->toArray();
-                
+
                 // Lösche zugehörige Teilnahmen
                 Participant::whereIn('team_id', $teamIds)->delete();
-                
+
                 // Lösche die Teams selbst
                 Team::whereIn('id', $teamIds)->delete();
             }
-            
+
             // Alle Benutzer abrufen
             $users = User::all()->shuffle();
-            
+
             // Berechnen, wie viele Teams wir erstellen können
             $teamCount = ceil($users->count() / $validated['team_size']);
-            
+
             // Teams erstellen
             $teams = [];
             for ($i = 0; $i < $teamCount; $i++) {
@@ -79,7 +79,7 @@ class TeamAssignmentController extends Controller
                     'week_label' => $validated['week_label']
                 ]);
             }
-            
+
             // Benutzer auf Teams aufteilen
             $teamIndex = 0;
             foreach ($users as $user) {
@@ -87,37 +87,37 @@ class TeamAssignmentController extends Controller
                     'user_id' => $user->id,
                     'team_id' => $teams[$teamIndex % $teamCount]->id
                 ]);
-                
+
                 $teamIndex++;
             }
-            
+
             // Gegner-Teams zuweisen
             $assignments = $this->teamAssignmentService->assignOpponents($validated['week_label']);
-            
+
             DB::commit();
-            
+
             return redirect()->route('teams.assignments')
                 ->with('success', 'Teams erfolgreich generiert! ' . count($teams) . ' Teams erstellt.');
-                
+
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Fehler beim Generieren der Teams: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Zeigt die aktuellen Team-Zuweisungen an
      */
     public function showAssignments()
     {
         $currentWeekLabel = $this->teamAssignmentService->getCurrentWeekLabel();
-        
+
         $teams = Team::where('week_label', $currentWeekLabel)
             ->with(['participants.user'])
             ->get();
-            
+
         $assignments = $this->teamAssignmentService->assignOpponents($currentWeekLabel);
-        
+
         return view('teams.assignments', compact('teams', 'assignments', 'currentWeekLabel'));
     }
 }

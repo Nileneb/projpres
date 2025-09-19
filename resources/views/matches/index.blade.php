@@ -3,7 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Challenges') }}
         </h2>
-            <a href="{{ route('matches.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+            <a href="{{ route('matches.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                 {{ __('New Challenge') }}
             </a>
         </div>
@@ -28,14 +28,14 @@
 
                                                 @if($match->status == 'completed' && $match->submission_url)
                                                     <p class="font-semibold">Solution:</p>
-                                                    <a href="{{ $match->submission_url }}" target="_blank" class="text-blue-600 hover:underline">
+                                                    <a href="{{ $match->submission_url }}" target="_blank" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                                         View submission
                                                     </a>
                                                 @elseif($match->status == 'in_progress')
                                                     <p class="text-amber-600">
                                                         <span class="font-semibold">Status:</span> In Progress
-                                                        @if($match->solver_id == auth()->user()->team_id)
-                                                            <a href="{{ route('matches.submit', $match) }}" class="ml-2 text-blue-600 hover:underline">
+                                                        @if($match->solver_team_id == auth()->user()->team_id)
+                                                            <a href="{{ route('matches.submit', $match) }}" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                                                 Submit Solution
                                                             </a>
                                                         @endif
@@ -43,10 +43,10 @@
                                                 @elseif($match->status == 'created')
                                                     <p class="text-gray-600 dark:text-gray-400">
                                                         <span class="font-semibold">Status:</span> Not Started
-                                                        @if($match->solver_id == auth()->user()->team_id)
+                                                        @if($match->solver_team_id == auth()->user()->team_id)
                                                             <form method="POST" action="{{ route('matches.start', $match) }}" class="inline">
                                                                 @csrf
-                                                                <button type="submit" class="ml-2 text-blue-600 hover:underline">
+                                                                <button type="submit" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                                                     Start Challenge
                                                                 </button>
                                                             </form>
@@ -56,12 +56,12 @@
                                             </div>
                                         </div>
                                         <div>
-                                            @if($match->status == 'completed' && auth()->user()->team_id != $match->creator_id && auth()->user()->team_id != $match->solver_id)
+                                            @if($match->status == 'completed' && auth()->user()->team_id != $match->creator_team_id && auth()->user()->team_id != $match->solver_team_id)
                                                 <div class="text-right">
                                                     @if(!$match->votes()->where('user_id', auth()->id())->exists())
                                                         <form method="POST" action="{{ route('votes.store', $match) }}" class="inline-flex space-x-2">
                                                             @csrf
-                                                            <select name="rating" class="rounded-md border-gray-300">
+                                                            <select name="rating" class="rounded-md border-gray-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white">
                                                                 <option value="1">1 - Poor</option>
                                                                 <option value="2">2 - Fair</option>
                                                                 <option value="3">3 - Good</option>
@@ -73,7 +73,7 @@
                                                             </button>
                                                         </form>
                                                     @else
-                                                        <span class="text-green-600">
+                                                        <span class="text-green-600 dark:text-green-400">
                                                             You voted: {{ $match->votes()->where('user_id', auth()->id())->first()->score }}/5
                                                         </span>
                                                     @endif
@@ -97,7 +97,7 @@
                         <div class="text-center py-8">
                             <p class="text-gray-600 dark:text-gray-400">No challenges yet.</p>
                             <p class="mt-2">
-                                <a href="{{ route('matches.create') }}" class="text-blue-600 hover:underline">
+                                <a href="{{ route('matches.create') }}" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                     Create your first challenge
                                 </a>
                             </p>
