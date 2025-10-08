@@ -21,7 +21,7 @@
                                         </select>
                                     </form>
                                 </div>
-                                
+
                                 <!-- Pagination Controls -->
                                 @if($totalWeeks > 10)
                                     <div class="flex items-center space-x-2">
@@ -30,11 +30,11 @@
                                                 &larr; {{ __('Previous') }}
                                             </a>
                                         @endif
-                                        
+
                                         <span class="text-sm text-gray-600 dark:text-gray-400">
                                             {{ __('Page') }} {{ $page }} {{ __('of') }} {{ ceil($totalWeeks / 10) }}
                                         </span>
-                                        
+
                                         @if($hasMorePages)
                                             <a href="{{ route('history.index', ['page' => $page + 1, 'week' => $selectedWeek]) }}" class="px-3 py-1 bg-gray-100 dark:bg-zinc-700 rounded-md text-sm hover:bg-gray-200 dark:hover:bg-zinc-600">
                                                 {{ __('Next') }} &rarr;

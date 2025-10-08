@@ -65,13 +65,13 @@ class HistoryController extends Controller
             ->get();
 
         return view('history.index', compact(
-            'currentWeek', 
-            'availableWeeks', 
+            'currentWeek',
+            'availableWeeks',
             'paginatedWeeks',
-            'selectedWeek', 
-            'teams', 
-            'matches', 
-            'page', 
+            'selectedWeek',
+            'teams',
+            'matches',
+            'page',
             'hasMorePages',
             'hasPreviousPages',
             'totalWeeks'
