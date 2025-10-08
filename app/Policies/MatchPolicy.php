@@ -86,8 +86,7 @@ class MatchPolicy
      */
     public function submit(User $u, Matches $m)
     {
-        // nur Solver-Team & Status created oder in_progress & (optional) Zeitfenster prüfen
-        return $m->solver->users->contains($u->id) &&
-               ($m->status === 'created' || $m->status === 'in_progress');
+        // nur Solver-Team & Status MUSS in_progress sein
+        return $m->solver->users->contains($u->id) && $m->status === 'in_progress';
     }
 }

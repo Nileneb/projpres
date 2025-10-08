@@ -11,8 +11,14 @@ class SubmitMatchRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Da die Autorisierung komplexe Datenbankabfragen erfordert,
-        // die von den Route-Parametern abhängen, belassen wir dies im Controller
+        $match = $this->route()->parameter('match');
+
+        // Prüfen, ob der Status 'in_progress' ist
+        if ($match && $match->status !== 'in_progress') {
+            return false;
+        }
+
+        // Weitere Autorisierungslogik wird über die Policy im Controller gehandhabt
         return true;
     }
 

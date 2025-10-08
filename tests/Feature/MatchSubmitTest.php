@@ -121,4 +121,34 @@ class MatchSubmitTest extends TestCase
         // Überprüfe, dass der Match-Status immer noch "created" ist
         $this->assertEquals('created', $match->fresh()->status);
     }
+
+    public function test_cannot_access_submit_form_if_match_not_in_progress()
+    {
+        // Erstelle Benutzer und Teams
+        $user = User::factory()->create();
+        $creatorTeam = Team::factory()->create(['week_label' => '2023-KW01']);
+        $solverTeam = Team::factory()->create(['week_label' => '2023-KW01']);
+
+        // Füge den Benutzer zum Solver-Team hinzu
+        Participant::factory()->create([
+            'user_id' => $user->id,
+            'team_id' => $solverTeam->id,
+        ]);
+
+        // Erstelle ein Match im Status "created" (nicht in_progress)
+        $match = Matches::factory()->create([
+            'creator_team_id' => $creatorTeam->id,
+            'solver_team_id' => $solverTeam->id,
+            'status' => 'created',
+            'week_label' => '2023-KW01',
+        ]);
+
+        // Teste, dass das Formular nicht aufgerufen werden kann, wenn der Match-Status nicht "in_progress" ist
+        $this->actingAs(User::find($user->id));
+
+        $response = $this->get(route('matches.submit', $match));
+
+        // Überprüfe, dass der Zugriff verweigert wurde
+        $response->assertStatus(403);
+    }
 }

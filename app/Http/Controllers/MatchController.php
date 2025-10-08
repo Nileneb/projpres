@@ -120,15 +120,12 @@ class MatchController extends Controller {
     }
 
     public function submitForm(Matches $match) {
-        // Ensure the current user is from the solver team
-        $user = request()->user();
-        $isInSolverTeam = $user->teams()
-            ->where('teams.id', $match->solver_team_id)
-            ->where('week_label', $match->week_label)
-            ->exists();
+        // Autorisierung mit Gate durchführen
+        \Illuminate\Support\Facades\Gate::authorize('submit', $match);
 
-        if (!$isInSolverTeam) {
-            abort(403, 'You are not authorized to submit a solution for this challenge');
+        // Zusätzliche Prüfung, ob der Status 'in_progress' ist
+        if ($match->status !== 'in_progress') {
+            abort(403, 'Cannot submit solution if match not in progress');
         }
 
         return view('matches.submit', compact('match'));
@@ -137,6 +134,11 @@ class MatchController extends Controller {
     public function submitSolution(SubmitMatchRequest $request, Matches $match) {
         // Autorisierung mit Gate durchführen
         \Illuminate\Support\Facades\Gate::authorize('submit', $match);
+
+        // Zusätzliche Prüfung, ob der Status 'in_progress' ist
+        if ($match->status !== 'in_progress') {
+            abort(403, 'Cannot submit solution if match not in progress');
+        }
 
         // Team-Zuweisung Service laden
         $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
