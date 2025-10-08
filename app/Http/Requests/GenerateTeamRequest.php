@@ -28,7 +28,7 @@ class GenerateTeamRequest extends FormRequest
             'force' => 'sometimes|boolean',
         ];
     }
-    
+
     /**
      * Get custom messages for validator errors.
      *

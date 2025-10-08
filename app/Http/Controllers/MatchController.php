@@ -107,7 +107,7 @@ class MatchController extends Controller {
         if (!$isInSolverTeam) {
             abort(403, 'You are not authorized to start this challenge');
         }
-        
+
         // Ensure the match is in 'created' status
         if ($match->status !== 'created') {
             return redirect()->route('matches.index')

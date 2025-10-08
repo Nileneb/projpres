@@ -25,7 +25,7 @@ class UpdateChallengeRequest extends FormRequest
             'challenge_text' => ['required', 'string', 'min:10'],
         ];
     }
-    
+
     /**
      * Get custom messages for validator errors.
      *

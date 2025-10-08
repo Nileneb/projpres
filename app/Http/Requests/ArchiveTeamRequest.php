@@ -27,7 +27,7 @@ class ArchiveTeamRequest extends FormRequest
             'week_label' => 'sometimes|string',
         ];
     }
-    
+
     /**
      * Get custom messages for validator errors.
      *

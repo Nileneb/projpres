@@ -27,7 +27,7 @@ class StoreVoteRequest extends FormRequest
             'comment' => ['nullable', 'string'],
         ];
     }
-    
+
     /**
      * Get custom messages for validator errors.
      *

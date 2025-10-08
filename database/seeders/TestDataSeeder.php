@@ -20,7 +20,7 @@ class TestDataSeeder extends Seeder
         if (User::where('email', 'admin@example.com')->exists()) {
             $this->command->info('Test data already exists. Skipping seeding to prevent duplicates.');
             $this->command->info('To force re-seeding, run: php artisan db:seed --class=TestDataSeeder --force');
-            
+
             // Wenn --force Flag gesetzt ist, lösche vorhandene Daten und erstelle neue
             if ($this->command->option('force')) {
                 $this->command->info('Force flag detected. Clearing existing data...');
@@ -52,7 +52,7 @@ class TestDataSeeder extends Seeder
         $weekNumber = date('W');
         $year = date('Y');
         $weekLabel = $year . '-KW' . $weekNumber;
-        
+
         // Alternative: Falls ein fixer Wert für Tests bevorzugt wird
         // $weekLabel = '2025-KW38';
 
@@ -60,7 +60,7 @@ class TestDataSeeder extends Seeder
         $this->command->info('Creating teams for week ' . $weekLabel);
         $teamNames = ['Team Alpha', 'Team Beta', 'Team Gamma'];
         $teams = collect();
-        
+
         foreach ($teamNames as $index => $name) {
             $team = Team::firstOrCreate(
                 ['week_label' => $weekLabel, 'name' => $name],
@@ -68,7 +68,7 @@ class TestDataSeeder extends Seeder
             );
             $teams->push($team);
         }
-        
+
         // Teams für bessere Lesbarkeit extrahieren
         $team1 = $teams[0];
         $team2 = $teams[1];
@@ -84,7 +84,7 @@ class TestDataSeeder extends Seeder
                 $exists = Participant::where('team_id', $team->id)
                                     ->where('user_id', $user->id)
                                     ->exists();
-                
+
                 if (!$exists) {
                     Participant::create([
                         'team_id' => $team->id,
@@ -135,7 +135,7 @@ class TestDataSeeder extends Seeder
                 'submission_notes' => 'Hier ist unser Meme zum Projekt. Wir haben uns für ein klassisches "Expectation vs. Reality" Format entschieden.',
             ]
         ];
-        
+
         // Challenges erstellen oder bestehende aktualisieren
         $matchIds = [];
         foreach ($challenges as $index => $challenge) {
@@ -144,17 +144,17 @@ class TestDataSeeder extends Seeder
                                        ->where('creator_team_id', $challenge['creator_team_id'])
                                        ->where('solver_team_id', $challenge['solver_team_id'])
                                        ->first();
-            
+
             if ($existingMatch) {
                 $existingMatch->update($challenge);
                 $match = $existingMatch;
             } else {
                 $match = MatchModel::create($challenge);
             }
-            
+
             $matchIds[$index] = $match->id;
         }
-        
+
         // Referenzen für spätere Nutzung
         $match2Id = $matchIds[1];
         $match3Id = $matchIds[2];
@@ -182,7 +182,7 @@ class TestDataSeeder extends Seeder
             $exists = Participant::where('team_id', $archivedTeam1->id)
                                 ->where('user_id', $user->id)
                                 ->exists();
-            
+
             if (!$exists) {
                 Participant::create([
                     'team_id' => $archivedTeam1->id,
@@ -197,7 +197,7 @@ class TestDataSeeder extends Seeder
             $exists = Participant::where('team_id', $archivedTeam2->id)
                                 ->where('user_id', $user->id)
                                 ->exists();
-            
+
             if (!$exists) {
                 Participant::create([
                     'team_id' => $archivedTeam2->id,
@@ -212,7 +212,7 @@ class TestDataSeeder extends Seeder
                                         ->where('creator_team_id', $archivedTeam1->id)
                                         ->where('solver_team_id', $archivedTeam2->id)
                                         ->first();
-                                        
+
         $archivedMatchData = [
             'week_label' => $archivedWeekLabel,
             'creator_team_id' => $archivedTeam1->id,
@@ -226,7 +226,7 @@ class TestDataSeeder extends Seeder
             'submission_url' => 'https://example.com/archived-solution.jpg',
             'submission_notes' => 'Diese Archiv-Einreichung demonstriert, wie wir frühere Challenges gelöst haben.',
         ];
-        
+
         if ($existingArchivedMatch) {
             $existingArchivedMatch->update($archivedMatchData);
             $archivedMatch = $existingArchivedMatch;
@@ -256,7 +256,7 @@ class TestDataSeeder extends Seeder
             $existingVote = \App\Models\Vote::where('match_id', $match3Id)
                                            ->where('user_id', $user->id)
                                            ->first();
-                                           
+
             if ($existingVote) {
                 $existingVote->update([
                     'score' => $score,
@@ -282,12 +282,12 @@ class TestDataSeeder extends Seeder
 
         foreach ($validVotersForArchivedMatch as $user) {
             $score = rand(1, 5);
-            
+
             // Prüfen, ob bereits eine Stimme existiert
             $existingVote = \App\Models\Vote::where('match_id', $archivedMatch->id)
                                            ->where('user_id', $user->id)
                                            ->first();
-            
+
             if ($existingVote) {
                 $existingVote->update([
                     'score' => $score,

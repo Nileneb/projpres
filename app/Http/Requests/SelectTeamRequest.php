@@ -26,7 +26,7 @@ class SelectTeamRequest extends FormRequest
             'week_label' => 'required|string'
         ];
     }
-    
+
     /**
      * Get custom messages for validator errors.
      *
