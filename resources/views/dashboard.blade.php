@@ -17,13 +17,13 @@
                 <span class="text-sm text-neutral-600 dark:text-neutral-300">Create a new challenge</span>
             </a>
 
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 flex flex-col items-center justify-center">
+            <a href="{{ route('leaderboard.index') }}" class="flex flex-col items-center justify-center aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800">
                 <svg xmlns="http://www.w3.org/2000/svg" class="size-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
-                <span class="text-lg font-semibold">My Votes</span>
-                <span class="text-sm text-neutral-600 dark:text-neutral-300">You have cast {{ auth()->user()->votes->count() }} votes</span>
-            </div>
+                <span class="text-lg font-semibold">Leaderboard</span>
+                <span class="text-sm text-neutral-600 dark:text-neutral-300">View user rankings</span>
+            </a>
         </div>
 
         <!-- Challenges Section -->

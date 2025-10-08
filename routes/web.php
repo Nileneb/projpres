@@ -5,6 +5,7 @@ use Livewire\Volt\Volt;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\VoteController;
+use App\Http\Controllers\LeaderboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -46,6 +47,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Vote routes
     Route::post('/matches/{match}/votes', [VoteController::class, 'store'])->name('votes.store');
+
+    // Leaderboard route
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 });
 
 require __DIR__.'/auth.php';
