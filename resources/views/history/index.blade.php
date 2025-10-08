@@ -85,12 +85,7 @@
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <span class="px-2.5 py-1 text-xs font-medium rounded-full
-                                                        {{ $match->status == 'submitted' || $match->status == 'closed' ?
-                                                           'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                                                           'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">
-                                                        {{ ucfirst($match->status) }}
-                                                    </span>
+                                                    <x-match-status :status="$match->status" />
 
                                                     @if($match->votes->count() > 0)
                                                         <div class="mt-2 text-right">

@@ -76,9 +76,9 @@
                                             </div>
                                             <div>
                                                 @if ($disabled)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-zinc-700 dark:text-gray-300">
+                                                    <x-badge color="gray" size="sm">
                                                         Already has challenge
-                                                    </span>
+                                                    </x-badge>
                                                 @else
                                                     <a href="{{ route('matches.create', ['solver_team_id' => $team->id, 'week_label' => $weekLabel]) }}"
                                                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">

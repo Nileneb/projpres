@@ -25,12 +25,7 @@
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status:</span>
-                                <span class="ml-1 status-badge
-                                    @if($match->status == 'created') status-pending @endif
-                                    @if($match->status == 'in_progress') status-in-progress @endif
-                                    @if($match->status == 'submitted') status-submitted @endif
-                                    @if($match->status == 'closed') status-closed @endif
-                                ">{{ ucfirst($match->status) }}</span>
+                                <x-match-status :status="$match->status" />
                             </div>
                         </div>
 

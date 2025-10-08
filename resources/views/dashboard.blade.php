@@ -139,12 +139,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <span class="px-2.5 py-1 text-xs font-medium rounded-full
-                                            {{ $match->status == 'submitted' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                                               ($match->status == 'in_progress' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                                               'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200') }}">
-                                            {{ ucfirst($match->status) }}
-                                        </span>
+                                        <x-match-status :status="$match->status" />
 
                                         <div class="mt-2 flex justify-end">
                                             @if($match->status == 'created')
@@ -183,18 +178,18 @@
                                 <p class="text-sm text-neutral-600 dark:text-neutral-300">{{ $team->week_label }}</p>
                             </div>
                             <div>
-                                <span class="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                <x-badge color="blue">
                                     {{ $team->participants->count() }} Members
-                                </span>
+                                </x-badge>
                             </div>
                         </div>
                         <div class="mt-3">
                             <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Members:</h4>
                             <div class="flex flex-wrap gap-2 mt-1">
                                 @foreach($team->participants as $participant)
-                                    <span class="px-2 py-1 text-xs bg-gray-100 dark:bg-zinc-700 rounded">
+                                    <x-badge color="gray" :pill="false" size="sm">
                                         {{ $participant->user->name }}
-                                    </span>
+                                    </x-badge>
                                 @endforeach
                             </div>
                         </div>

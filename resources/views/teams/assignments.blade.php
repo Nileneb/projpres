@@ -8,8 +8,10 @@
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             @if(session('success'))
-                <div class="p-4 mb-4 text-sm text-green-800 bg-green-100 rounded-lg dark:bg-green-900 dark:text-green-300">
-                    {{ session('success') }}
+                <div class="p-4 mb-4 rounded-lg">
+                    <x-badge color="green" :pill="false">
+                        {{ session('success') }}
+                    </x-badge>
                 </div>
             @endif
 
@@ -56,9 +58,9 @@
                                                         Challenge erstellen
                                                     </a>
                                                 @else
-                                                    <span class="inline-flex items-center px-3 py-1 mt-2 text-xs font-medium text-green-800 bg-green-100 rounded-md dark:bg-green-900 dark:text-green-300">
+                                                    <x-badge color="green" :pill="false" class="mt-2">
                                                         Challenge bereits erstellt
-                                                    </span>
+                                                    </x-badge>
                                                 @endif
                                             </div>
                                         @endif

@@ -10,8 +10,10 @@
             <div class="overflow-hidden bg-white shadow-sm dark:bg-zinc-800 sm:rounded-lg">
                 <div class="p-6">
                     @if(session('error'))
-                        <div class="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg dark:bg-red-900 dark:text-red-300">
-                            {{ session('error') }}
+                        <div class="p-4 mb-4 rounded-lg">
+                            <x-badge color="red" :pill="false">
+                                {{ session('error') }}
+                            </x-badge>
                         </div>
                     @endif
 

@@ -1,4 +1,12 @@
-<x-layouts.app :title="__('Teams')">
+<x-layouts.app :ti                    @if(request()->get('include_archived'))
+                        <x-badge color="amber" size="lg">
+                            Showing Archived Teams
+                        </x-badge>
+                    @else
+                        <x-badge color="green" size="lg">
+                            Showing Active Teams
+                        </x-badge>
+                    @endifTeams')">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-white leading-tight">
             {{ __('Teams') }}
