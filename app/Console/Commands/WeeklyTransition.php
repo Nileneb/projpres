@@ -197,12 +197,25 @@ class WeeklyTransition extends Command
                 ]);
 
                 // Teilnehmer erstellen
+                $skippedUsers = [];
+                $teamAssignmentService = app(TeamAssignmentService::class);
+                
                 foreach ($teamUserIds as $userId) {
-                    Participant::create([
-                        'user_id' => $userId,
-                        'team_id' => $team->id,
-                        'role' => null // Standard-Rolle
-                    ]);
+                    $result = $teamAssignmentService->addUserToTeam(
+                        $userId, 
+                        $team->id, 
+                        $weekLabel, 
+                        null // Standard-Rolle
+                    );
+                    
+                    if (!$result['success']) {
+                        $skippedUsers[] = $userId;
+                        $this->warn("User ID {$userId} wurde übersprungen: {$result['message']}");
+                    }
+                }
+                
+                if (count($skippedUsers) > 0) {
+                    $this->warn("Es wurden " . count($skippedUsers) . " Benutzer übersprungen beim Erstellen von Team {$team->name}.");
                 }
 
                 $this->info("Created team: {$team->name} with " . count($teamUserIds) . " members");

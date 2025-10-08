@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Participant;
 use App\Models\Matches;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TeamAssignmentService
 {
@@ -105,5 +106,62 @@ class TeamAssignmentService
         $year = date('Y');
         $weekNumber = date('W');
         return "{$year}-KW{$weekNumber}";
+    }
+    
+    /**
+     * Überprüft, ob ein Benutzer bereits einem Team für eine bestimmte Woche zugewiesen ist
+     *
+     * @param int $userId
+     * @param string $weekLabel
+     * @return bool
+     */
+    public function isUserAlreadyInTeamForWeek($userId, $weekLabel)
+    {
+        return Participant::whereHas('team', function($query) use ($weekLabel) {
+                $query->where('week_label', $weekLabel);
+            })
+            ->where('user_id', $userId)
+            ->exists();
+    }
+    
+    /**
+     * Fügt einen Benutzer zu einem Team hinzu, aber nur wenn er noch nicht in einem Team für diese Woche ist
+     *
+     * @param int $userId
+     * @param int $teamId
+     * @param string $weekLabel
+     * @param string|null $role
+     * @return array
+     */
+    public function addUserToTeam($userId, $teamId, $weekLabel, $role = null)
+    {
+        // Prüfen, ob der Benutzer bereits in einem Team für diese Woche ist
+        if ($this->isUserAlreadyInTeamForWeek($userId, $weekLabel)) {
+            Log::warning("User ID {$userId} ist bereits einem Team für die Woche {$weekLabel} zugeordnet und wird übersprungen.");
+            return [
+                'success' => false,
+                'message' => "Benutzer ist bereits einem Team für diese Woche zugeordnet."
+            ];
+        }
+        
+        // Benutzer zum Team hinzufügen
+        try {
+            Participant::create([
+                'user_id' => $userId,
+                'team_id' => $teamId,
+                'role' => $role
+            ]);
+            
+            return [
+                'success' => true,
+                'message' => "Benutzer erfolgreich zum Team hinzugefügt."
+            ];
+        } catch (\Exception $e) {
+            Log::error("Fehler beim Hinzufügen des Benutzers {$userId} zum Team {$teamId}: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => "Fehler beim Hinzufügen des Benutzers zum Team: " . $e->getMessage()
+            ];
+        }
     }
 }
