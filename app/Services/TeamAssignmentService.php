@@ -107,7 +107,7 @@ class TeamAssignmentService
         $weekNumber = date('W');
         return "{$year}-KW{$weekNumber}";
     }
-    
+
     /**
      * Überprüft, ob ein Benutzer bereits einem Team für eine bestimmte Woche zugewiesen ist
      *
@@ -123,7 +123,7 @@ class TeamAssignmentService
             ->where('user_id', $userId)
             ->exists();
     }
-    
+
     /**
      * Fügt einen Benutzer zu einem Team hinzu, aber nur wenn er noch nicht in einem Team für diese Woche ist
      *
@@ -143,7 +143,7 @@ class TeamAssignmentService
                 'message' => "Benutzer ist bereits einem Team für diese Woche zugeordnet."
             ];
         }
-        
+
         // Benutzer zum Team hinzufügen
         try {
             Participant::create([
@@ -151,7 +151,7 @@ class TeamAssignmentService
                 'team_id' => $teamId,
                 'role' => $role
             ]);
-            
+
             return [
                 'success' => true,
                 'message' => "Benutzer erfolgreich zum Team hinzugefügt."

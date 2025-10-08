@@ -82,21 +82,21 @@ class TeamAssignmentController extends Controller
             // Benutzer auf Teams aufteilen
             $teamIndex = 0;
             $skippedUsers = [];
-            
+
             foreach ($users as $user) {
                 $result = $this->teamAssignmentService->addUserToTeam(
-                    $user->id, 
+                    $user->id,
                     $teams[$teamIndex % $teamCount]->id,
                     $validated['week_label']
                 );
-                
+
                 if (!$result['success']) {
                     $skippedUsers[] = $user->name;
                 }
-                
+
                 $teamIndex++;
             }
-            
+
             // Wenn Benutzer übersprungen wurden, füge eine Warnung zur Erfolgsmeldung hinzu
             if (count($skippedUsers) > 0) {
                 session()->flash('warning', 'Einige Benutzer wurden übersprungen, da sie bereits einem Team für diese Woche zugewiesen sind: ' . implode(', ', $skippedUsers));
