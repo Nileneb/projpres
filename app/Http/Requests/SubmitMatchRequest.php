@@ -11,7 +11,15 @@ class SubmitMatchRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Vereinfachter Ansatz: Zuerst true zurückgeben, die eigentliche Validierung erfolgt im Controller
+        // Get the Matches model instance directly from the controller parameter
+        $match = request()->route()->parameter('match');
+        
+        // Prüfen, ob der Status 'in_progress' ist
+        if ($match && $match->status !== 'in_progress') {
+            return false;
+        }
+        
+        // Weitere Autorisierungslogik wird über die Policy im Controller gehandhabt
         return true;
     }
 

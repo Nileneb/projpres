@@ -11,13 +11,14 @@ test('password can be updated', function () {
 
     $this->actingAs($user);
 
-    $response = Volt::test('settings.password')
-        ->set('current_password', 'password')
-        ->set('password', 'new-password')
-        ->set('password_confirmation', 'new-password')
-        ->call('updatePassword');
+    $response = $this->put(route('password.update'), [
+        'current_password' => 'password',
+        'password' => 'new-password',
+        'password_confirmation' => 'new-password',
+    ]);
 
-    $response->assertHasNoErrors();
+    $response->assertSessionHasNoErrors();
+    $response->assertRedirect();
 
     expect(Hash::check('new-password', $user->refresh()->password))->toBeTrue();
 });
@@ -29,11 +30,11 @@ test('correct password must be provided to update password', function () {
 
     $this->actingAs($user);
 
-    $response = Volt::test('settings.password')
-        ->set('current_password', 'wrong-password')
-        ->set('password', 'new-password')
-        ->set('password_confirmation', 'new-password')
-        ->call('updatePassword');
+    $response = $this->put(route('password.update'), [
+        'current_password' => 'wrong-password',
+        'password' => 'new-password',
+        'password_confirmation' => 'new-password',
+    ]);
 
-    $response->assertHasErrors(['current_password']);
+    $response->assertSessionHasErrors(['current_password']);
 });

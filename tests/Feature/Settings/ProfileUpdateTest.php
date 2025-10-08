@@ -14,12 +14,13 @@ test('profile information can be updated', function () {
 
     $this->actingAs($user);
 
-    $response = Volt::test('settings.profile')
-        ->set('name', 'Test User')
-        ->set('email', 'test@example.com')
-        ->call('updateProfileInformation');
+    $response = $this->patch(route('profile.update'), [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+    ]);
 
-    $response->assertHasNoErrors();
+    $response->assertSessionHasNoErrors();
+    $response->assertRedirect();
 
     $user->refresh();
 
@@ -33,43 +34,47 @@ test('email verification status is unchanged when email address is unchanged', f
 
     $this->actingAs($user);
 
-    $response = Volt::test('settings.profile')
-        ->set('name', 'Test User')
-        ->set('email', $user->email)
-        ->call('updateProfileInformation');
+    $response = $this->patch(route('profile.update'), [
+        'name' => 'Test User',
+        'email' => $user->email,
+    ]);
 
-    $response->assertHasNoErrors();
+    $response->assertSessionHasNoErrors();
+    $response->assertRedirect();
 
     expect($user->refresh()->email_verified_at)->not->toBeNull();
 });
 
 test('user can delete their account', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'password' => bcrypt('password'),
+    ]);
 
     $this->actingAs($user);
 
-    $response = Volt::test('settings.delete-user-form')
-        ->set('password', 'password')
-        ->call('deleteUser');
+    $response = $this->delete(route('profile.destroy'), [
+        'password' => 'password',
+    ]);
 
-    $response
-        ->assertHasNoErrors()
-        ->assertRedirect('/');
+    $response->assertSessionHasNoErrors();
+    $response->assertRedirect('/');
 
     expect($user->fresh())->toBeNull();
-    expect(auth()->check())->toBeFalse();
+    $this->assertGuest();
 });
 
 test('correct password must be provided to delete account', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'password' => bcrypt('password'),
+    ]);
 
     $this->actingAs($user);
 
-    $response = Volt::test('settings.delete-user-form')
-        ->set('password', 'wrong-password')
-        ->call('deleteUser');
+    $response = $this->delete(route('profile.destroy'), [
+        'password' => 'wrong-password',
+    ]);
 
-    $response->assertHasErrors(['password']);
+    $response->assertSessionHasErrors(['password']);
 
     expect($user->fresh())->not->toBeNull();
 });
