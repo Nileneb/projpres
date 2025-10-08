@@ -11,11 +11,10 @@ class CreateChallengeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Da die Autorisierung komplexe Datenbankabfragen erfordert,
-        // die von den Eingabedaten abhängen, belassen wir dies im Controller
+        // Autorisierung erfolgt im Controller mit komplexen Checks
         return true;
     }
-
+    
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,6 +27,20 @@ class CreateChallengeRequest extends FormRequest
             'solver_team_id' => ['required', 'exists:teams,id'],
             'challenge_text' => ['required', 'string', 'min:10'],
             'time_limit_minutes' => ['required', 'integer', 'min:5', 'max:60'],
+        ];
+    }
+    
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'challenge_text.min' => 'Die Challenge-Beschreibung muss mindestens 10 Zeichen lang sein.',
+            'time_limit_minutes.min' => 'Die Zeitbegrenzung muss mindestens 5 Minuten betragen.',
+            'time_limit_minutes.max' => 'Die Zeitbegrenzung darf maximal 60 Minuten betragen.',
         ];
     }
 }

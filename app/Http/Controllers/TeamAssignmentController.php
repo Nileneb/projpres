@@ -64,8 +64,8 @@ class TeamAssignmentController extends Controller
                 Team::whereIn('id', $teamIds)->delete();
             }
 
-            // Alle Benutzer abrufen
-            $users = User::all()->shuffle();
+            // Nur aktive Benutzer abrufen
+            $users = User::where('is_active', true)->get()->shuffle();
 
             // Berechnen, wie viele Teams wir erstellen können
             $teamCount = ceil($users->count() / $validated['team_size']);

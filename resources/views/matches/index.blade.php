@@ -35,27 +35,23 @@
                                                     <a href="{{ $match->submission_url }}" target="_blank" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                                         View submission
                                                     </a>
-                                                @elseif($match->status == 'in_progress')
-                                                    <p class="text-amber-600">
-                                                        <span class="font-semibold">Status:</span> In Progress
-                                                        @if($match->solver_team_id == auth()->user()->team_id)
-                                                            <a href="{{ route('matches.submit', $match) }}" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
-                                                                Submit Solution
-                                                            </a>
-                                                        @endif
-                                                    </p>
-                                                @elseif($match->status == 'created')
-                                                    <p class="text-gray-600 dark:text-gray-400">
-                                                        <span class="font-semibold">Status:</span> Not Started
-                                                        @if($match->solver_team_id == auth()->user()->team_id)
-                                                            <form method="POST" action="{{ route('matches.start', $match) }}" class="inline">
-                                                                @csrf
-                                                                <button type="submit" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
-                                                                    Start Challenge
-                                                                </button>
-                                                            </form>
-                                                        @endif
-                                                    </p>
+                                                <div class="flex items-center">
+                                                    <span class="font-semibold mr-2">Status:</span> 
+                                                    <x-match-status :status="$match->status" />
+                                                    
+                                                    @if($match->status == 'in_progress' && $match->solver_team_id == auth()->user()->teams->pluck('id')->contains($match->solver_team_id))
+                                                        <a href="{{ route('matches.submit', $match) }}" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                                                            Submit Solution
+                                                        </a>
+                                                    @elseif($match->status == 'created' && auth()->user()->teams->pluck('id')->contains($match->solver_team_id))
+                                                        <form method="POST" action="{{ route('matches.start', $match) }}" class="inline">
+                                                            @csrf
+                                                            <button type="submit" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                                                                Start Challenge
+                                                            </button>
+                                                        </form>
+                                                    @endif
+                                                </div>
                                                 @endif
                                             </div>
                                         </div>

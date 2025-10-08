@@ -14,6 +14,13 @@ class MatchStatus extends Component
     public $status;
 
     /**
+     * Die Variante für das Badge (bestimmt die Farbe).
+     *
+     * @var string
+     */
+    public $variant;
+
+    /**
      * Erstellt eine neue Komponente-Instanz.
      *
      * @param  string  $status
@@ -22,6 +29,24 @@ class MatchStatus extends Component
     public function __construct($status)
     {
         $this->status = $status;
+        $this->variant = $this->getVariantFromStatus($status);
+    }
+
+    /**
+     * Get the variant (color) based on the status.
+     *
+     * @param string $status
+     * @return string
+     */
+    protected function getVariantFromStatus($status)
+    {
+        return match ($status) {
+            'created' => 'gray',
+            'in_progress' => 'amber',
+            'submitted' => 'green',
+            'closed' => 'blue',
+            default => 'gray',
+        };
     }
 
     /**

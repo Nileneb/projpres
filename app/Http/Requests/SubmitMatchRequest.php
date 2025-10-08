@@ -11,15 +11,7 @@ class SubmitMatchRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Get the Matches model instance directly from the controller parameter
-        $match = request()->route()->parameter('match');
-
-        // Prüfen, ob der Status 'in_progress' ist
-        if ($match && $match->status !== 'in_progress') {
-            return false;
-        }
-
-        // Weitere Autorisierungslogik wird über die Policy im Controller gehandhabt
+        // Autorisierung erfolgt über Policy und weitere Checks im Controller
         return true;
     }
 
@@ -32,6 +24,19 @@ class SubmitMatchRequest extends FormRequest
     {
         return [
             'submission_url' => ['required', 'url'],
+        ];
+    }
+    
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'submission_url.required' => 'Eine Einreichungs-URL ist erforderlich.',
+            'submission_url.url' => 'Bitte gib eine gültige URL ein.',
         ];
     }
 }

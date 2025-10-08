@@ -57,6 +57,16 @@
                                     </div>
                                 @endif
                             </div>
+                            
+                            <div class="mt-4">
+                                <label for="is_active" class="inline-flex items-center">
+                                    <input id="is_active" name="is_active" type="checkbox" value="1" class="rounded dark:bg-zinc-900 border-gray-300 dark:border-zinc-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-zinc-800" {{ Auth::user()->is_active ? 'checked' : '' }}>
+                                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Participate in next week\'s challenge') }}</span>
+                                </label>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    {{ __('When checked, you will be automatically assigned to a team for the next week.') }}
+                                </p>
+                            </div>
 
                             <div class="flex items-center gap-4">
                                 <x-primary-button>{{ __('Save') }}</x-primary-button>

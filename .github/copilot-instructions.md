@@ -171,57 +171,75 @@ ORDER BY total_points DESC;
 
 
 Next-Todo:
-Auth – Login
+# Challenge Roulette – Dev To‑Do Board (v4)
 
-Users can authenticate using the login screen.
+## ✅ Done
 
-Users cannot authenticate with invalid password.
+* [x] **Status-Vokabular normalisiert**: Migrations gleichen alte Werte an und setzen Default auf `created`.
+* [x] **Weekly Transition & Scheduling**: Konsolenbefehl schließt offene Matches, archiviert Teams und bereitet die nächste Woche vor; Task sonntags terminiert.
+* [x] **FormRequests verdrahtet**: `CreateChallengeRequest`, `SubmitMatchRequest`, `StoreVoteRequest`, `GenerateTeamRequest`, `ArchiveTeamRequest` – Controller greifen darauf zu.
+* [x] **Voting vereinheitlicht**: Formular/Request/Controller nutzen `score`, Policy prüft Teilnahme & Status.
+* [x] **Start setzt Zeitfenster**: `started_at` und `deadline` werden beim Starten der Challenge gesetzt.
+* [x] **History & Leaderboard**: History-Ansicht für vergangene Wochen; Leaderboard aggregiert Punkte auf User-Ebene (All‑Time & Current‑Week, optional ohne archivierte Teams).
+* [x] **Policies & Gates**: `AuthServiceProvider` registriert Policies; Gate `manage-teams` (Admin) aktiv.
+* [x] **Team‑Archivierung**: Feld `is_archived` + Scopes/Controller‑Aktionen.
+* [x] **1 Team / User / Woche**: Service‑Check verhindert Doppelzuweisung.
 
-Likely cause: minor mismatch in the login action or redirect handling; also double‑check session regeneration call and guard.
+---
 
-Auth – Registration
+## ⛏️ To‑Do (Next Up)
 
-New users can register.
+1. **Deadline erzwingen**
 
-Likely cause: redirect/guard mismatch similar to login.
+   * Bei **Submit**: `abort` wenn `now() > deadline`; freundliche Fehlermeldung im UI.
+   * Tests: rechtzeitig vs. zu spät.
 
-Password Confirmation
+2. **Dashboard‑CTAs korrigieren**
 
-Confirm password happy/invalid paths.
+   * Für Solver:
 
-Likely cause: confirm action not setting the password confirmation stamp correctly (auth.password_confirmed_at) or mismatch in redirect.
+     * Status `created` → **Start**‑Button (Route `matches.start`).
+     * Status `in_progress` → **Submit**‑Button.
+   * Submit‑Form nur bei `in_progress` verlinken.
 
-Password Reset
+3. **Status‑Badges vereinheitlichen**
 
-Request link, render reset screen, reset with valid token.
+   * Überall `<x-match-status :status="..."/>` verwenden.
+   * Alte CSS‑Klassen (`status-pending` etc.) entfernen/umbennen (`created`, `in_progress`, `submitted`, `closed`).
 
-Likely cause: missing password_reset_tokens table migration or password broker config.
+4. **Settings: „Teilnahme nächste Woche“**
 
-Settings – Password Update
+   * Checkbox in Profile‑Settings → `users.is_active`.
+   * `SettingsController@updateProfile`: `is_active` validieren/speichern.
+   * Tests für Opt‑in/Opt‑out.
 
-Update with correct/incorrect current password.
+5. **Team‑Generierung auf aktive Nutzer beschränken**
 
-Likely cause: validator or hash check path needs review.
+   * In `TeamAssignmentController@generate` `User::all()` → `User::where('is_active', true)->get()`.
+   * Hinweis im UI, wenn zu wenige aktive Nutzer vorhanden sind.
 
-Settings – Profile
+6. **Docs/Dev‑UX**
 
-Profile page render, update profile, unchanged-email keeps verification, delete account.
+   * README ergänzen: Weekly‑Command (`--force`, `--dry-run`), Seeding/Factories, lokales Scheduling (`schedule:work`).
 
-Likely cause: route name/path OK but page action or Livewire route binding needs review; ensure component methods and route names match tests.
+7. **Roulette‑Animation**
 
-MatchSubmit
+   * `resources/js/app.js`: Canvas/SVG‑Wheel (Spin, Ease, Event‑Emit nach Auswahl), Livewire‑Hook.
 
-“Cannot submit solution if match not in progress”.
+8. **Scheduler‑Zeitzone**
 
-Likely cause: controller/policy not blocking submit unless status === in_progress.
+   * App/Kernel auf `Europe/Berlin` ausrichten oder `->timezone('Europe/Berlin')` setzen.
 
-Fast‑Track Fix Plan (in order)
+9. **Tests erweitern**
 
-1) Password reset foundation
-2) Login & Register
-3) Password Confirmation
-4) Settings: Password update
-5) Settings: Profile
-6) Match submit guard
-7) Test harness & config sanity
+   * Start/Submit‑Gating, Deadline, Settings‑Toggle, Team‑Generierung nur aktive Nutzer.
+
+---
+
+## 🧹 Cleanups
+
+* Doppelte Settings‑Views zusammenführen (`resources/views/settings`, `pages/settings`, `livewire/settings`).
+* Inline‑Status‑Spans im Dashboard durch Komponente ersetzen.
+* Nicht genutzte CSS‑Reste entfernen; kleine UI‑Tooltips für Buttons.
+
 
