@@ -138,6 +138,7 @@ ORDER BY total_points DESC;
    * Command/Job: Am Wochenende `status='closed'` setzen (und optional `archived`).
    * Dashboard zeigt nur `currentWeek` + `status != archived`.
    * Separate History-Ansicht: vergangene `week_label` read-only listen.
+   >> direkt randomize Teams für neue Woche (identische Teams wie letzte Woche vermeiden!>> Wie kann man das klug umsetzen?)
 
 5. **Roulette-Animation integrieren**
 

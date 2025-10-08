@@ -40,12 +40,30 @@
 
             <!-- Challenges created by my team -->
             @php
-                $createdMatches = auth()->user()->participants->flatMap->team->flatMap->createdMatches;
-                $solverMatches = auth()->user()->participants->flatMap->team->flatMap->solverMatches;
+                $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
+                $currentWeek = $teamAssignmentService->getCurrentWeekLabel();
+
+                // Nur aktive (nicht archivierte) Teams des Benutzers für die aktuelle Woche laden
+                $activeTeams = auth()->user()->teams()->where('week_label', $currentWeek)
+                                    ->where('is_archived', false)->get();
+                
+                // Challenges filtern nach aktueller Woche und aktiven Teams
+                $createdMatches = collect();
+                $solverMatches = collect();
+                
+                foreach ($activeTeams as $team) {
+                    $createdMatches = $createdMatches->merge(
+                        $team->createdMatches()->where('week_label', $currentWeek)->get()
+                    );
+                    
+                    $solverMatches = $solverMatches->merge(
+                        $team->solvedMatches()->where('week_label', $currentWeek)->get()
+                    );
+                }
             @endphp
 
             <div class="mb-6">
-                <h3 class="text-lg font-medium mb-3">Created by your team</h3>
+                <h3 class="text-lg font-medium mb-3">Created by your team ({{ $currentWeek }})</h3>
 
                 @if($createdMatches->count() > 0)
                     <div class="space-y-4">
@@ -97,7 +115,7 @@
 
             <!-- Challenges assigned to my team -->
             <div>
-                <h3 class="text-lg font-medium mb-3">Assigned to your team</h3>
+                <h3 class="text-lg font-medium mb-3">Assigned to your team ({{ $currentWeek }})</h3>
 
                 @if($solverMatches->count() > 0)
                     <div class="space-y-4">

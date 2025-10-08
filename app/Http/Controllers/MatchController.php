@@ -58,7 +58,7 @@ class MatchController extends Controller {
         $validated = $request->validated();
 
         // Finde das Team des aktuellen Benutzers für die angegebene Woche
-        $user = request()->user();
+        $user = \Illuminate\Support\Facades\Auth::user();
         $creatorTeam = $user->teams()
             ->where('week_label', $validated['week_label'])
             ->firstOrFail();
@@ -135,16 +135,8 @@ class MatchController extends Controller {
     }
 
     public function submitSolution(SubmitMatchRequest $request, Matches $match) {
-        // Ensure the current user is from the solver team
-        $user = request()->user();
-        $isInSolverTeam = $user->teams()
-            ->where('teams.id', $match->solver_team_id)
-            ->where('week_label', $match->week_label)
-            ->exists();
-
-        if (!$isInSolverTeam) {
-            abort(403, 'You are not authorized to submit a solution for this challenge');
-        }
+        // Autorisierung mit Gate durchführen
+        \Illuminate\Support\Facades\Gate::authorize('submit', $match);
 
         // Team-Zuweisung Service laden
         $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);

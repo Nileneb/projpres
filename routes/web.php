@@ -6,6 +6,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\HistoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -53,6 +54,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Leaderboard route
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+    
+    // History route
+    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
 
 require __DIR__.'/auth.php';
