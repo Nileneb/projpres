@@ -40,6 +40,8 @@ Each status represents a different stage in the challenge lifecycle:
 - **submitted**: When the solver team has submitted their solution
 - **closed**: When voting period has ended (managed by admin)
 
+Note: Originally, the database used 'pending' as the default, but migrations have been added to standardize on 'created' as the initial state. The codebase has been updated to use these standardized status values everywhere.
+
 ### Project-Specific Patterns
 - Week labels use format "YYYY-KWnn" (e.g., "2023-KW38")
 - Teams can only create one challenge per week
@@ -48,7 +50,10 @@ Each status represents a different stage in the challenge lifecycle:
 
 ### Important Implementation Details
 1. **Voting Authorization**: Voting is authorized through the policy system using `Gate::authorize('create', [Vote::class, $match])` which ensures only users who are not on the creator or solver teams can vote, and only when the match status is 'submitted'.
-2. **Match Creation Flow**: Creating a match works in two steps - first showing available teams if no parameters provided, then showing the creation form with the selected team.
+2. **Match Creation Flow**: Creating a match works in two steps:
+   - First step: `MatchController@create` without parameters shows the `matches.select_team` view with available teams
+   - Second step: After selecting a team, the `matches.create` form is shown with the selected team's information
+   - This two-step process ensures users can only challenge teams that don't already have a challenge
 
 ## Key Integration Points
 - `MatchController` uses `TeamAssignmentService` for challenge validation
