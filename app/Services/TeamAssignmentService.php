@@ -91,7 +91,7 @@ class TeamAssignmentService
     {
         return Matches::where('solver_team_id', $teamId)
             ->where('week_label', $weekLabel)
-            ->where('status', 'completed')
+            ->where('status', 'submitted')
             ->exists();
     }
 

@@ -68,6 +68,16 @@ php artisan serve
 php artisan test
 ```
 
+## Common Issues and Solutions
+
+### Cookie Security Issues
+If you encounter errors like "Cookie was rejected because it has the 'secure' attribute but was transmitted over HTTP", add these to your `.env`:
+```
+SESSION_SECURE_COOKIE=false
+SESSION_DOMAIN=null
+SESSION_SAME_SITE=lax
+```
+
 ## Core Files
 - `app/Services/TeamAssignmentService.php` - Team management logic
 - `app/Http/Controllers/MatchController.php` - Challenge workflow

@@ -23,7 +23,7 @@ class MatchesFactory extends Factory
             'time_limit_minutes' => $this->faker->randomElement([15, 20, 30, 45]),
             'submission_url' => $this->faker->optional(0.7)->url(),
             'submitted_at' => $this->faker->optional(0.7)->dateTimeBetween('-1 week', 'now'),
-            'status' => $this->faker->randomElement(['pending', 'submitted', 'closed'])
+            'status' => $this->faker->randomElement(['created', 'in_progress', 'submitted', 'closed'])
         ];
     }
 }

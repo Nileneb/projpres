@@ -61,7 +61,7 @@ class TestDataSeeder extends Seeder
         }
 
         // Status-Optionen für Matches
-        $statuses = ['created', 'in_progress', 'completed'];
+        $statuses = ['created', 'in_progress', 'submitted'];
 
         // Beispiel-Challenges erstellen
         $this->command->info('Creating sample challenges...');
@@ -95,7 +95,7 @@ class TestDataSeeder extends Seeder
             'solver_team_id' => $team1->id,
             'challenge_text' => 'Erstellt ein Meme zu eurem Projektfortschritt.',
             'time_limit_minutes' => 10,
-            'status' => $statuses[2], // completed
+            'status' => $statuses[2], // submitted
             'started_at' => now()->subHours(1),
             'deadline' => now()->subMinutes(50),
             'submitted_at' => now()->subMinutes(52),
