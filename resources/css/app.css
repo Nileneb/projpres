@@ -95,7 +95,7 @@
         background-color: var(--color-status-in_progress-bg);
         color: var(--color-status-in_progress-text);
     }
-    
+
     .status-submitted {
         background-color: var(--color-status-submitted-bg);
         color: var(--color-status-submitted-text);
