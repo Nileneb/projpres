@@ -25,8 +25,8 @@ return new class extends Migration
             }
 
             try {
-                // Füge einen neuen Unique Constraint hinzu
-                $table->unique(['week_label', 'creator_team_id', 'solver_team_id', 'challenge_text'], 'matches_unique_challenge');
+                // Füge einen neuen Unique Constraint hinzu (nur mit den drei Spalten für Eindeutigkeit)
+                $table->unique(['week_label', 'creator_team_id', 'solver_team_id'], 'matches_week_label_creator_team_id_solver_team_id_unique');
             } catch (\Exception $e) {
                 // Ignore if the index already exists
             }
@@ -46,13 +46,13 @@ return new class extends Migration
         Schema::table('matches', function (Blueprint $table) {
             try {
                 // Attempt to drop the new constraint
-                $table->dropUnique('matches_unique_challenge');
+                $table->dropUnique('matches_week_label_creator_team_id_solver_team_id_unique');
             } catch (\Exception $e) {
                 // Ignore if the index doesn't exist
             }
 
             try {
-                // Stelle den alten Constraint wieder her
+                // Stelle den ursprünglichen Constraint wieder her (mit dem originalen Namen)
                 $table->unique(['week_label', 'creator_team_id', 'solver_team_id'], 'matches_week_label_creator_team_id_solver_team_id_unique');
             } catch (\Exception $e) {
                 // Ignore if the index already exists
