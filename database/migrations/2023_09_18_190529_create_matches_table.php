@@ -20,13 +20,13 @@ return new class extends Migration
             $t->unsignedTinyInteger('time_limit_minutes')->default(20);
             $t->string('submission_url')->nullable();
             $t->timestamp('submitted_at')->nullable();
-            $t->string('status')->default('pending'); // pending|submitted|closed
+            $t->string('status')->default('created'); // created|in_progress|submitted|closed
             $t->timestamps();
             $t->unique(['week_label','creator_team_id','solver_team_id']);
             $t->index(['week_label','status']);
 
             // CHECK-Constraint direkt in der CREATE TABLE-Anweisung
-            //$t->raw("CHECK (status IN ('pending','submitted','closed'))");
+            //$t->raw("CHECK (status IN ('created','in_progress','submitted','closed'))");
         });
     }
 

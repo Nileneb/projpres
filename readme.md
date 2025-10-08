@@ -41,7 +41,11 @@ npm install
 # Setup environment
 cp .env.example .env
 php artisan key:generate
+
+# Run migrations (creates the database structure)
 php artisan migrate
+
+# Optional: Seed with test data
 php artisan db:seed --class=TestDataSeeder
 
 # Build frontend assets
@@ -104,6 +108,14 @@ Matches follow this status flow:
 ```
 created → in_progress → submitted → closed
 ```
+
+Each status represents a different stage in the challenge lifecycle:
+- **created**: Initial state when a challenge is first created
+- **in_progress**: When a solver team starts working on the challenge
+- **submitted**: When the solver team has submitted their solution
+- **closed**: When voting period has ended (managed by admin)
+
+> **Note for Developers**: The migrations have been updated to use 'created' as the default status value for new challenges. If you're upgrading from an older version, the migrations will automatically convert any 'pending' status values to 'created'.
 
 ### Team Participation Settings
 
