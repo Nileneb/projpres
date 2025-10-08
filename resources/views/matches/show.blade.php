@@ -32,14 +32,20 @@
                                 @endphp
 
                                 @if($match->status == 'in_progress' && $isInSolverTeam)
-                                    <a href="{{ route('matches.submit', $match) }}" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                                    <a href="{{ route('matches.submit', $match) }}" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline group relative">
                                         Submit Solution
+                                        <span class="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block bg-black/80 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                                            Submit your solution for this challenge
+                                        </span>
                                     </a>
                                 @elseif($match->status == 'created' && $isInSolverTeam)
                                     <form method="POST" action="{{ route('matches.start', $match) }}" class="inline">
                                         @csrf
-                                        <button type="submit" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                                        <button type="submit" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline group relative">
                                             Start Challenge
+                                            <span class="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block bg-black/80 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                                                Start the {{ $match->time_limit_minutes }}-minute timer for this challenge
+                                            </span>
                                         </button>
                                     </form>
                                 @endif

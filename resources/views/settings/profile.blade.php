@@ -66,6 +66,9 @@
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     {{ __('When checked, you will be automatically assigned to a team for the next week.') }}
                                 </p>
+                                <x-tooltip>
+                                    {{ __('You can opt out of team assignments for weeks when you are unavailable. You will be added to teams only when this option is checked.') }}
+                                </x-tooltip>
                             </div>
 
                             <div class="flex items-center gap-4">

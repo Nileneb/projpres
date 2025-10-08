@@ -85,11 +85,17 @@
         border-radius: 9999px;
     }
 
-    .status-pending {
-        background-color: var(--color-status-pending-bg);
-        color: var(--color-status-pending-text);
+    /* Status badges - using new naming convention */
+    .status-created {
+        background-color: var(--color-status-created-bg);
+        color: var(--color-status-created-text);
     }
 
+    .status-in_progress {
+        background-color: var(--color-status-in_progress-bg);
+        color: var(--color-status-in_progress-text);
+    }
+    
     .status-submitted {
         background-color: var(--color-status-submitted-bg);
         color: var(--color-status-submitted-text);
