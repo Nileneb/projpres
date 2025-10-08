@@ -7,25 +7,53 @@
                         <h2 class="text-xl font-semibold">{{ __('Challenge History') }}</h2>
 
                         @if(count($availableWeeks) > 0)
-                            <div class="flex items-center">
-                                <span class="mr-2">{{ __('Select week:') }}</span>
-                                <form method="GET" action="{{ route('history.index') }}" class="inline-flex">
-                                    <select name="week" onchange="this.form.submit()" class="rounded-md border-gray-300 dark:border-zinc-600 dark:bg-zinc-700">
-                                        @foreach($availableWeeks as $week)
-                                            <option value="{{ $week }}" {{ $week === $selectedWeek ? 'selected' : '' }}>
-                                                {{ $week }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </form>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <span class="mr-2">{{ __('Select week:') }}</span>
+                                    <form method="GET" action="{{ route('history.index') }}" class="inline-flex">
+                                        <input type="hidden" name="page" value="{{ $page }}">
+                                        <select name="week" onchange="this.form.submit()" class="rounded-md border-gray-300 dark:border-zinc-600 dark:bg-zinc-700">
+                                            @foreach($paginatedWeeks as $week)
+                                                <option value="{{ $week }}" {{ $week === $selectedWeek ? 'selected' : '' }}>
+                                                    {{ $week }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </form>
+                                </div>
+                                
+                                <!-- Pagination Controls -->
+                                @if($totalWeeks > 10)
+                                    <div class="flex items-center space-x-2">
+                                        @if($hasPreviousPages)
+                                            <a href="{{ route('history.index', ['page' => $page - 1, 'week' => $selectedWeek]) }}" class="px-3 py-1 bg-gray-100 dark:bg-zinc-700 rounded-md text-sm hover:bg-gray-200 dark:hover:bg-zinc-600">
+                                                &larr; {{ __('Previous') }}
+                                            </a>
+                                        @endif
+                                        
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">
+                                            {{ __('Page') }} {{ $page }} {{ __('of') }} {{ ceil($totalWeeks / 10) }}
+                                        </span>
+                                        
+                                        @if($hasMorePages)
+                                            <a href="{{ route('history.index', ['page' => $page + 1, 'week' => $selectedWeek]) }}" class="px-3 py-1 bg-gray-100 dark:bg-zinc-700 rounded-md text-sm hover:bg-gray-200 dark:hover:bg-zinc-600">
+                                                {{ __('Next') }} &rarr;
+                                            </a>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     </div>
 
                     @if(empty($selectedWeek))
-                        <div class="text-center py-8">
-                            <p class="text-gray-500 dark:text-gray-400">{{ __('No historical data available.') }}</p>
-                            <p class="mt-2 text-gray-500 dark:text-gray-400">{{ __('Current week is') }} {{ $currentWeek }}</p>
+                        <div class="text-center py-12">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h3 class="mt-2 text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('No historical data available.') }}</h3>
+                            <p class="mt-1 text-gray-500 dark:text-gray-400">{{ __('Current week is') }} {{ $currentWeek }}</p>
+                            <p class="mt-2 text-gray-500 dark:text-gray-400">{{ __('Past challenges will appear here when weeks are completed.') }}</p>
                         </div>
                     @else
                         <div class="mb-8">
@@ -124,8 +152,12 @@
                                     @endforeach
                                 </div>
                             @else
-                                <div class="bg-gray-50 dark:bg-zinc-700 p-4 rounded-md text-center">
-                                    <p class="text-gray-600 dark:text-gray-300">{{ __('No challenges found for this week.') }}</p>
+                                <div class="bg-gray-50 dark:bg-zinc-700 p-8 rounded-md text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <h4 class="mt-2 text-lg font-medium text-gray-700 dark:text-gray-300">{{ __('No challenges found') }}</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">{{ __('No challenges were created during this week.') }}</p>
                                 </div>
                             @endif
                         </div>

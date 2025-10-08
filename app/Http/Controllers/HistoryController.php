@@ -26,17 +26,30 @@ class HistoryController extends Controller
             ->pluck('week_label')
             ->toArray();
 
-        // Ausgewählte Woche (Standard: neueste verfügbare Woche)
-        $selectedWeek = $request->input('week', $availableWeeks[0] ?? null);
+        // Pagination für verfügbare Wochen (10 pro Seite)
+        $perPage = 10;
+        $page = $request->input('page', 1);
+        $totalWeeks = count($availableWeeks);
+        $paginatedWeeks = array_slice($availableWeeks, ($page - 1) * $perPage, $perPage);
+        $hasMorePages = $totalWeeks > $page * $perPage;
+        $hasPreviousPages = $page > 1;
+
+        // Ausgewählte Woche (Standard: neueste verfügbare Woche aus der aktuellen Paginationsseite)
+        $selectedWeek = $request->input('week', $paginatedWeeks[0] ?? null);
 
         // Wenn keine historische Woche verfügbar ist
         if (empty($selectedWeek)) {
             return view('history.index', [
                 'currentWeek' => $currentWeek,
                 'availableWeeks' => [],
+                'paginatedWeeks' => [],
                 'selectedWeek' => null,
                 'teams' => collect(),
                 'matches' => collect(),
+                'page' => 1,
+                'hasMorePages' => false,
+                'hasPreviousPages' => false,
+                'totalWeeks' => 0,
             ]);
         }
 
@@ -51,6 +64,17 @@ class HistoryController extends Controller
             ->with(['creator', 'solver', 'votes'])
             ->get();
 
-        return view('history.index', compact('currentWeek', 'availableWeeks', 'selectedWeek', 'teams', 'matches'));
+        return view('history.index', compact(
+            'currentWeek', 
+            'availableWeeks', 
+            'paginatedWeeks',
+            'selectedWeek', 
+            'teams', 
+            'matches', 
+            'page', 
+            'hasMorePages',
+            'hasPreviousPages',
+            'totalWeeks'
+        ));
     }
 }
