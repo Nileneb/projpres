@@ -21,7 +21,27 @@ class SetLanguage
     {
         // Wenn eine Sprache in der Session gespeichert ist, verwende diese
         if (Session::has('locale')) {
-            App::setLocale(Session::get('locale'));
+            $locale = Session::get('locale');
+            App::setLocale($locale);
+        } else {
+            // Verwende die Standardsprache der Anwendung oder die Browsersprache
+            $browserLang = substr($request->server('HTTP_ACCEPT_LANGUAGE') ?? '', 0, 2);
+            $locale = in_array($browserLang, ['en', 'de']) ? $browserLang : config('app.locale');
+            App::setLocale($locale);
+            Session::put('locale', $locale);
+        }
+
+        // Füge Debug-Information hinzu, wenn APP_DEBUG=true ist
+        if (config('app.debug')) {
+            $response = $next($request);
+            if ($response instanceof \Illuminate\Http\Response) {
+                $content = $response->getContent();
+                $debugInfo = "<!-- Current locale: " . App::getLocale() . " -->";
+                $content = str_replace('</body>', $debugInfo . '</body>', $content);
+                $response->setContent($content);
+                return $response;
+            }
+            return $next($request);
         }
 
         return $next($request);

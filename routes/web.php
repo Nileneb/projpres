@@ -7,6 +7,7 @@ use App\Http\Controllers\MatchController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\LanguageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -60,6 +61,9 @@ Route::middleware(['auth'])->group(function () {
 
     // History route
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+
+    // Sprachschalter-Route
+    Route::get('/language/{locale}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
 });
 
 require __DIR__.'/auth.php';

@@ -22,6 +22,9 @@ class LanguageController extends Controller
         if (in_array($locale, ['en', 'de'])) {
             // Sprache in der Session speichern
             Session::put('locale', $locale);
+
+            // Sofort für die aktuelle Anfrage setzen
+            App::setLocale($locale);
         }
 
         // Zurück zur vorherigen Seite

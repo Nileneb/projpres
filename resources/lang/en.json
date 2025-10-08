@@ -1,8 +1,23 @@
 {
+    "Dashboard": "Dashboard",
+    "Challenges": "Challenges",
+    "Teams": "Teams",
+    "History": "History",
+    "Leaderboard": "Leaderboard",
+    "Manage Account": "Manage Account",
+    "Profile": "Profile",
+    "Settings": "Settings",
+    "Log Out": "Log Out",
     "Submit Solution": "Submit Solution",
     "Submission URL": "Submission URL",
     "Submission Notes (optional)": "Submission Notes (optional)",
     "Challenge Details:": "Challenge Details:",
     "From:": "From:",
-    "To:": "To:"
+    "To:": "To:",
+    "Teams generieren": "Generate Teams",
+    "New Challenge": "New Challenge",
+    "Create a new challenge": "Create a new challenge",
+    "Show all Teams": "Show all Teams",
+    "View user rankings": "View user rankings",
+    "View past challenges": "View past challenges"
 }
