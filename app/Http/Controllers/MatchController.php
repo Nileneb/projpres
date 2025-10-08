@@ -20,14 +20,23 @@ class MatchController extends Controller {
     }
 
     public function create(Request $request) {
-        $validated = $request->validate([
-            'solver_team_id' => 'required|exists:teams,id',
-            'week_label' => 'required|string'
-        ]);
-
-        // Get the solver team
-        $solverTeam = Team::findOrFail($request->solver_team_id);
-        $weekLabel = $request->week_label;
+        // Get current week label and possible solver teams
+        $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
+        $weekLabel = $teamAssignmentService->getCurrentWeekLabel();
+        
+        // Get solver team if provided, otherwise show selection form
+        if ($request->has('solver_team_id') && $request->has('week_label')) {
+            $validated = $request->validate([
+                'solver_team_id' => 'required|exists:teams,id',
+                'week_label' => 'required|string'
+            ]);
+            $solverTeam = Team::findOrFail($request->solver_team_id);
+            $weekLabel = $request->week_label;
+        } else {
+            // Get all teams for the current week
+            $solverTeams = Team::where('week_label', $weekLabel)->get();
+            return view('matches.select_team', compact('solverTeams', 'weekLabel'));
+        }
         $timeLimit = 20; // Default time limit
 
         return view('matches.create', compact('solverTeam', 'weekLabel', 'timeLimit'));
@@ -145,7 +154,7 @@ class MatchController extends Controller {
         $match->update([
             'submission_url' => $validated['submission_url'],
             'submitted_at' => now(),
-            'status' => 'completed'
+            'status' => 'submitted'
         ]);
 
         return redirect()->route('matches.index')

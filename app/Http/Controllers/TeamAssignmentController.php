@@ -94,6 +94,20 @@ class TeamAssignmentController extends Controller
 
             // Gegner-Teams zuweisen
             $assignments = $this->teamAssignmentService->assignOpponents($validated['week_label']);
+            
+            // Create matches for each team pair
+            if ($assignments['success']) {
+                foreach ($assignments['assignments'] as $pair) {
+                    \App\Models\Matches::firstOrCreate([
+                        'week_label'       => $validated['week_label'],
+                        'creator_team_id'  => $pair['team']->id,
+                        'solver_team_id'   => $pair['opponent']->id,
+                    ],[
+                        'status' => 'created',
+                        'time_limit_minutes' => 20,
+                    ]);
+                }
+            }
 
             DB::commit();
 

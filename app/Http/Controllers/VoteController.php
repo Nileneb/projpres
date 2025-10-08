@@ -9,26 +9,11 @@ use App\Http\Requests\StoreVoteRequest;
 
 class VoteController extends Controller {
     public function store(Request $request, Matches $match) {
-        // Validate the request
-        $validated = $request->validate([
-            'rating' => 'required|integer|min:1|max:5'
-        ]);
-
-        // Check if user is eligible to vote (not in creator or solver team)
-        $user = request()->user();
-        $isInInvolvedTeams = $user->teams()
-            ->where('week_label', $match->week_label)
-            ->whereIn('teams.id', [$match->creator_team_id, $match->solver_team_id])
-            ->exists();
-
-        if ($isInInvolvedTeams) {
-            return back()->with('error', 'You cannot vote on challenges involving your team.');
-        }
-
-        // Create or update the vote
+        \Illuminate\Support\Facades\Gate::authorize('create', [Vote::class, $match]); // ← NEU
+        $data = $request->validate(['rating'=>'required|integer|min:1|max:5']);
         Vote::updateOrCreate(
-            ['match_id' => $match->id, 'user_id' => $user->getAuthIdentifier()],
-            ['score' => $validated['rating']]
+          ['match_id'=>$match->id,'user_id'=>$request->user()->id],
+          ['score'=>$data['rating']]
         );
 
         return back()->with('success', 'Vote submitted successfully!');
