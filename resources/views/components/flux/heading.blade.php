@@ -7,7 +7,7 @@
         'lg' => 'text-2xl font-bold',
         'xl' => 'text-3xl font-bold',
     ];
-    
+
     $classes = $sizeClasses[$size] ?? $sizeClasses['lg'];
 @endphp
 

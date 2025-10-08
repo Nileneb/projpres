@@ -6,7 +6,7 @@
         'md' => 'text-base',
         'lg' => 'text-lg',
     ];
-    
+
     $classes = $sizeClasses[$size] ?? $sizeClasses['md'];
 @endphp
 

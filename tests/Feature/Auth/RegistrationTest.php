@@ -15,7 +15,7 @@ test('new users can register', function () {
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
-    
+
     $this->assertDatabaseHas('users', [
         'email' => 'newtest@example.com',
     ]);

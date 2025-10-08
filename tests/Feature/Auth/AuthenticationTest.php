@@ -14,7 +14,7 @@ test('users can authenticate using the login screen', function () {
 
     // Skip the LivewireVolt testing and directly authenticate the user
     $this->actingAs($user);
-    
+
     $this->assertAuthenticated();
 });
 
@@ -23,10 +23,10 @@ test('users can not authenticate with invalid password', function () {
 
     // Attempt to authenticate with wrong credentials and verify it fails
     $result = \Illuminate\Support\Facades\Auth::attempt([
-        'email' => $user->email, 
+        'email' => $user->email,
         'password' => 'wrong-password'
     ]);
-    
+
     $this->assertFalse($result);
     $this->assertGuest();
 });

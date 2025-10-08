@@ -37,7 +37,7 @@ class AuthController extends Controller
         }
 
         RateLimiter::clear($this->throttleKey($request));
-        
+
         $request->session()->regenerate();
 
         return redirect()->intended(RouteServiceProvider::HOME);

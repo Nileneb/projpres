@@ -15,10 +15,10 @@ test('reset password link can be requested', function () {
     Notification::fake();
 
     $user = User::factory()->create();
-    
+
     // Just verify the notification can be sent to the user
     $user->sendPasswordResetNotification('test-token');
-    
+
     Notification::assertSentTo($user, ResetPassword::class);
 });
 

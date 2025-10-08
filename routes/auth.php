@@ -10,7 +10,7 @@ Route::middleware('guest')->group(function () {
 
     Volt::route('register', 'auth.register')
         ->name('register');
-        
+
     // Add POST route for registration that handles the form submission
     Route::post('register', function (\Illuminate\Http\Request $request) {
         $request->validate([
@@ -18,15 +18,15 @@ Route::middleware('guest')->group(function () {
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed'],
         ]);
-        
+
         $user = \App\Models\User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
         ]);
-        
+
         \Illuminate\Support\Facades\Auth::login($user);
-        
+
         return redirect()->intended(route('dashboard'));
     });
 
@@ -35,7 +35,7 @@ Route::middleware('guest')->group(function () {
 
     Volt::route('reset-password/{token}', 'auth.reset-password')
         ->name('password.reset');
-        
+
     Route::post('/reset-password', function (\Illuminate\Http\Request $request) {
         $request->validate([
             'token' => 'required',
@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
-        
+
     Route::post('email/verification-notification', function (\Illuminate\Http\Request $request) {
         $request->user()->sendEmailVerificationNotification();
         return back()->with('status', 'verification-link-sent');

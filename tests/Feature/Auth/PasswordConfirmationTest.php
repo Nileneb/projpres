@@ -18,7 +18,7 @@ test('password can be confirmed', function () {
 
     // Manually set the password confirmation timestamp
     session(['auth.password_confirmed_at' => time()]);
-    
+
     // Verify we can access a protected route
     $response = $this->get(route('dashboard'));
     $response->assertStatus(200);
@@ -28,12 +28,12 @@ test('password is not confirmed with invalid password', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
-    
+
     // Attempt to verify password with incorrect password
     $verified = \Illuminate\Support\Facades\Hash::check('wrong-password', $user->password);
-    
+
     $this->assertFalse($verified);
-    
+
     // Ensure we haven't set the confirmation timestamp
     $this->assertFalse(session()->has('auth.password_confirmed_at'));
 });

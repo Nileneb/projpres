@@ -12,9 +12,9 @@
     $classes = $variantClasses[$variant] ?? $variantClasses['primary'];
 @endphp
 
-<button 
-    type="{{ $type }}" 
-    {{ $disabled ? 'disabled' : '' }} 
+<button
+    type="{{ $type }}"
+    {{ $disabled ? 'disabled' : '' }}
     {{ $attributes->merge(['class' => $baseClasses . ' ' . $classes]) }}
 >
     {{ $slot }}
