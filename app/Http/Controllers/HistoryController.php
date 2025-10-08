@@ -36,7 +36,7 @@ class HistoryController extends Controller
 
         // Ausgewählte Woche (Standard: neueste verfügbare Woche aus der aktuellen Paginationsseite)
         $selectedWeek = $request->input('week', $paginatedWeeks[0] ?? null);
-        
+
         // Filter für archivierte/nicht archivierte Teams
         $showArchived = $request->boolean('show_archived', true);
 
@@ -59,12 +59,12 @@ class HistoryController extends Controller
 
         // Teams für die ausgewählte Woche laden
         $teamsQuery = Team::where('week_label', $selectedWeek);
-        
+
         // Filter für archivierte Teams anwenden
         if (!$showArchived) {
             $teamsQuery->where('is_archived', false);
         }
-        
+
         $teams = $teamsQuery->with('users')
             ->orderBy('name')
             ->get();
@@ -74,13 +74,13 @@ class HistoryController extends Controller
 
         // Matches für die ausgewählte Woche laden
         $matchesQuery = Matches::where('week_label', $selectedWeek);
-        
+
         // Filter für archivierte Teams anwenden
         if (!$showArchived) {
             $matchesQuery->whereIn('creator_team_id', $teamIds)
                          ->whereIn('solver_team_id', $teamIds);
         }
-        
+
         $matches = $matchesQuery->with(['creator', 'solver', 'votes'])
             ->get();
 

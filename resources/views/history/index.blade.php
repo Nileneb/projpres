@@ -16,7 +16,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6 text-gray-900 dark:text-white">
                     <div class="flex justify-between items-center mb-4">
@@ -35,10 +35,10 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        
+
                                         <div class="flex items-center space-x-2">
-                                            <input type="checkbox" name="show_archived" value="1" id="show_archived" 
-                                                {{ $showArchived ? 'checked' : '' }} 
+                                            <input type="checkbox" name="show_archived" value="1" id="show_archived"
+                                                {{ $showArchived ? 'checked' : '' }}
                                                 onchange="this.form.submit()"
                                                 class="rounded border-gray-300 text-indigo-600 dark:border-zinc-600 dark:bg-zinc-700">
                                             <label for="show_archived" class="text-sm text-gray-700 dark:text-gray-300">
@@ -55,16 +55,16 @@
                                             $totalPages = ceil($totalWeeks / 10);
                                             $pageParam = ['show_archived' => $showArchived ? '1' : '0'];
                                         @endphp
-                                        
+
                                         <!-- First Page -->
-                                        <a href="{{ route('history.index', array_merge(['page' => 1, 'week' => $selectedWeek], $pageParam)) }}" 
+                                        <a href="{{ route('history.index', array_merge(['page' => 1, 'week' => $selectedWeek], $pageParam)) }}"
                                            class="px-2 py-1 bg-gray-100 dark:bg-zinc-700 rounded-md text-sm hover:bg-gray-200 dark:hover:bg-zinc-600 {{ $page == 1 ? 'opacity-50 cursor-not-allowed' : '' }}">
                                             &laquo;
                                         </a>
-                                        
+
                                         <!-- Previous -->
                                         @if($hasPreviousPages)
-                                            <a href="{{ route('history.index', array_merge(['page' => $page - 1, 'week' => $selectedWeek], $pageParam)) }}" 
+                                            <a href="{{ route('history.index', array_merge(['page' => $page - 1, 'week' => $selectedWeek], $pageParam)) }}"
                                                class="px-3 py-1 bg-gray-100 dark:bg-zinc-700 rounded-md text-sm hover:bg-gray-200 dark:hover:bg-zinc-600">
                                                 &larr;
                                             </a>
@@ -81,7 +81,7 @@
 
                                         <!-- Next -->
                                         @if($hasMorePages)
-                                            <a href="{{ route('history.index', array_merge(['page' => $page + 1, 'week' => $selectedWeek], $pageParam)) }}" 
+                                            <a href="{{ route('history.index', array_merge(['page' => $page + 1, 'week' => $selectedWeek], $pageParam)) }}"
                                                class="px-3 py-1 bg-gray-100 dark:bg-zinc-700 rounded-md text-sm hover:bg-gray-200 dark:hover:bg-zinc-600">
                                                 &rarr;
                                             </a>
@@ -90,9 +90,9 @@
                                                 &rarr;
                                             </span>
                                         @endif
-                                        
+
                                         <!-- Last Page -->
-                                        <a href="{{ route('history.index', array_merge(['page' => $totalPages, 'week' => $selectedWeek], $pageParam)) }}" 
+                                        <a href="{{ route('history.index', array_merge(['page' => $totalPages, 'week' => $selectedWeek], $pageParam)) }}"
                                            class="px-2 py-1 bg-gray-100 dark:bg-zinc-700 rounded-md text-sm hover:bg-gray-200 dark:hover:bg-zinc-600 {{ $page == $totalPages ? 'opacity-50 cursor-not-allowed' : '' }}">
                                             &raquo;
                                         </a>
