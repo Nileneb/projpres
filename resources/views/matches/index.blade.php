@@ -26,7 +26,7 @@
                                                 <p class="font-semibold">Challenge:</p>
                                                 <p class="mb-2">{{ $match->challenge_text }}</p>
 
-                                                @if($match->status == 'completed' && $match->submission_url)
+                                                @if($match->status == 'submitted' && $match->submission_url)
                                                     <p class="font-semibold">Solution:</p>
                                                     <a href="{{ $match->submission_url }}" target="_blank" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                                         View submission
@@ -56,7 +56,7 @@
                                             </div>
                                         </div>
                                         <div>
-                                            @if($match->status == 'completed' && auth()->user()->team_id != $match->creator_team_id && auth()->user()->team_id != $match->solver_team_id)
+                                            @if($match->status == 'submitted' && auth()->user()->team_id != $match->creator_team_id && auth()->user()->team_id != $match->solver_team_id)
                                                 <div class="text-right">
                                                     @if(!$match->votes()->where('user_id', auth()->id())->exists())
                                                         <form method="POST" action="{{ route('votes.store', $match) }}" class="inline-flex space-x-2">
