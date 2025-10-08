@@ -64,7 +64,7 @@ class SettingsController extends Controller
 
         return back()->with('status', 'password-updated');
     }
-    
+
     public function destroy(Request $request)
     {
         $request->validate([

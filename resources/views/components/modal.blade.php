@@ -23,14 +23,14 @@ $maxWidth = [
             if (! this.focusable) {
                 return;
             }
-            
+
             setTimeout(() => {
                 let focusable = this.$refs.dialog.querySelector('[autofocus]');
-                
+
                 if (! focusable) {
                     focusable = this.$refs.dialog.querySelector('button');
                 }
-                
+
                 if (focusable) {
                     focusable.focus();
                 }
