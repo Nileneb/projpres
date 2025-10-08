@@ -107,6 +107,12 @@ class MatchController extends Controller {
         if (!$isInSolverTeam) {
             abort(403, 'You are not authorized to start this challenge');
         }
+        
+        // Ensure the match is in 'created' status
+        if ($match->status !== 'created') {
+            return redirect()->route('matches.index')
+                ->with('error', 'This challenge cannot be started because it is already in progress or completed.');
+        }
 
         // Update the match status
         $match->update([
@@ -163,6 +169,7 @@ class MatchController extends Controller {
 
         $match->update([
             'submission_url' => $validated['submission_url'],
+            'submission_notes' => $validated['submission_notes'] ?? null,
             'submitted_at' => now(),
             'status' => 'submitted'
         ]);

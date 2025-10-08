@@ -26,4 +26,18 @@ class SelectTeamRequest extends FormRequest
             'week_label' => 'required|string'
         ];
     }
+    
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'solver_team_id.required' => 'Bitte wähle ein Team aus.',
+            'solver_team_id.exists' => 'Das ausgewählte Team existiert nicht.',
+            'week_label.required' => 'Die Wochenbezeichnung fehlt.',
+        ];
+    }
 }

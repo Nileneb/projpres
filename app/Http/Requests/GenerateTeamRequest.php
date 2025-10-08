@@ -28,4 +28,20 @@ class GenerateTeamRequest extends FormRequest
             'force' => 'sometimes|boolean',
         ];
     }
+    
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'week_label.required' => 'Bitte gib eine Wochenbezeichnung an.',
+            'team_size.required' => 'Bitte gib die Teamgröße an.',
+            'team_size.integer' => 'Die Teamgröße muss eine ganze Zahl sein.',
+            'team_size.min' => 'Die Teamgröße muss mindestens 2 sein.',
+            'team_size.max' => 'Die Teamgröße darf maximal 10 sein.',
+        ];
+    }
 }

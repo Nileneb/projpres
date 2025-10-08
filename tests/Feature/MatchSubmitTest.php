@@ -26,12 +26,14 @@ class MatchSubmitTest extends TestCase
             'team_id' => $solverTeam->id,
         ]);
 
-        // Erstelle ein Match im Status "in_progress"
+        // Erstelle ein Match im Status "in_progress" mit gesetzter deadline
         $match = Matches::factory()->create([
             'creator_team_id' => $creatorTeam->id,
             'solver_team_id' => $solverTeam->id,
             'status' => 'in_progress',
             'week_label' => '2023-KW01',
+            'started_at' => now()->subMinutes(5),
+            'deadline' => now()->addMinutes(15),
         ]);
 
         // Teste, dass der Benutzer als Mitglied des Solver-Teams eine Lösung einreichen kann

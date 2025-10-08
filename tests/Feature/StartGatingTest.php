@@ -57,6 +57,9 @@ test('only solver team members can start a match', function () {
     // Test 2: Creator team member cannot start the match
     Auth::login($creatorUser);
 
+    $match = Matches::find($match->id); // Fetch fresh instance
+    $match->update(['status' => 'created']); // Ensure status is created
+
     $response = $this->post(route('matches.start', $match));
 
     $response->assertStatus(403); // Forbidden

@@ -63,7 +63,7 @@ php artisan test
 The application includes a scheduled command to manage the weekly challenge cycle:
 
 ```bash
-# Run the weekly transition command manually
+# Run the weekly transition command manually (requires admin rights)
 php artisan app:weekly-transition
 
 # Options:
@@ -87,6 +87,9 @@ This task is scheduled to run every Sunday at midnight (Europe/Berlin timezone).
 # Generate test users, teams, matches and votes
 php artisan db:seed --class=TestDataSeeder
 
+# Re-run seeder (if data already exists)
+php artisan db:seed --class=TestDataSeeder --force
+
 # Generate only users
 php artisan db:seed --class=UserSeeder
 ```
@@ -109,6 +112,36 @@ Users can opt in/out of participation for the next week via their profile settin
 ### Team Generation
 
 Team generation only includes active users. The system requires at least 4 active users to create meaningful teams (minimum 2 teams with 2 members each).
+
+### Admin Rights
+
+Admin users have additional permissions controlled via the `manage-teams` Gate defined in `AuthServiceProvider`:
+
+```php
+// AuthServiceProvider.php
+Gate::define('manage-teams', function (User $user) {
+    return $user->is_admin === true;
+});
+```
+
+Admin users can:
+- Generate teams for new weeks
+- Archive teams (individually or by week)
+- Access team management features
+- Run the weekly transition manually
+
+### Archive Functionality
+
+#### Archiving Teams
+Teams can be archived by admins to maintain a clean workspace:
+- Archive individual teams from the Teams page
+- Archive all teams from a specific week
+
+#### Archive Filters
+Both the Leaderboard and History views include archive filters:
+- Toggle "Show archived teams" to include/exclude archived content
+- History view shows visual indicators (amber border) for archived teams
+- Leaderboard can filter scores from archived teams
 
 ---
 

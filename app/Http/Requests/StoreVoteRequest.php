@@ -27,4 +27,19 @@ class StoreVoteRequest extends FormRequest
             'comment' => ['nullable', 'string'],
         ];
     }
+    
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'score.required' => 'Bitte gib eine Bewertung ab.',
+            'score.integer' => 'Die Bewertung muss eine ganze Zahl sein.',
+            'score.min' => 'Die Bewertung muss mindestens 1 sein.',
+            'score.max' => 'Die Bewertung darf maximal 5 sein.',
+        ];
+    }
 }

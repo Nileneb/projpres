@@ -27,4 +27,18 @@ class ArchiveTeamRequest extends FormRequest
             'week_label' => 'sometimes|string',
         ];
     }
+    
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'team_id.integer' => 'Die Team-ID muss eine ganze Zahl sein.',
+            'team_id.exists' => 'Das ausgewählte Team existiert nicht.',
+            'week_label.string' => 'Die Wochenbezeichnung muss eine Zeichenkette sein.',
+        ];
+    }
 }

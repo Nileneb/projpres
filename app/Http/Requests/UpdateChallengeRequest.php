@@ -25,4 +25,17 @@ class UpdateChallengeRequest extends FormRequest
             'challenge_text' => ['required', 'string', 'min:10'],
         ];
     }
+    
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'challenge_text.required' => 'Die Challenge-Beschreibung darf nicht leer sein.',
+            'challenge_text.min' => 'Die Challenge-Beschreibung muss mindestens 10 Zeichen lang sein.',
+        ];
+    }
 }

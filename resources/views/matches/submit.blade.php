@@ -24,6 +24,13 @@
                             <x-ui.input-error :messages="$errors->get('submission_url')" class="mt-2" />
                         </div>
 
+                        <div class="mt-4">
+                            <x-ui.label for="submission_notes" :value="__('Submission Notes (optional)')" />
+                            <x-ui.textarea id="submission_notes" class="block mt-1 w-full" name="submission_notes" rows="4">{{ old('submission_notes') }}</x-ui.textarea>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Add any additional notes or context about your solution.</p>
+                            <x-ui.input-error :messages="$errors->get('submission_notes')" class="mt-2" />
+                        </div>
+
                         <div class="flex items-center justify-end mt-4">
                             <x-ui.button class="ml-4">
                                 {{ __('Submit Solution') }}

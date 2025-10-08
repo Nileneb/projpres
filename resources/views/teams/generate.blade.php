@@ -1,9 +1,7 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-white">
-            Teams generieren
-        </h2>
-    </x-slot>
+<x-layouts.app title="Teams generieren">
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-4">
+        Teams generieren
+    </h2>
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -88,4 +86,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-layouts.app>

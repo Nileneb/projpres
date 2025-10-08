@@ -24,6 +24,7 @@ class SubmitMatchRequest extends FormRequest
     {
         return [
             'submission_url' => ['required', 'url'],
+            'submission_notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
@@ -37,6 +38,8 @@ class SubmitMatchRequest extends FormRequest
         return [
             'submission_url.required' => 'Eine Einreichungs-URL ist erforderlich.',
             'submission_url.url' => 'Bitte gib eine gültige URL ein.',
+            'submission_notes.string' => 'Die Anmerkungen müssen ein Text sein.',
+            'submission_notes.max' => 'Die Anmerkungen dürfen maximal 1000 Zeichen lang sein.',
         ];
     }
 }

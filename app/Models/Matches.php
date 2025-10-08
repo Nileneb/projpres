@@ -19,6 +19,7 @@ class Matches extends Model
         'challenge_text',
         'time_limit_minutes',
         'submission_url',
+        'submission_notes',
         'started_at',
         'submitted_at',
         'deadline',

@@ -17,7 +17,7 @@ test('user can toggle is_active setting', function () {
     $this->assertTrue($user->is_active);
 
     // Test 1: Turn off is_active by not including it in the request
-    $response = $this->put(route('settings.profile.update'), [
+    $response = $this->patch(route('profile.update'), [
         'name' => 'Updated Name',
         'email' => $user->email,
         // is_active is not included
@@ -33,7 +33,7 @@ test('user can toggle is_active setting', function () {
     $this->assertFalse($user->is_active);
 
     // Test 2: Turn on is_active by including it in the request
-    $response = $this->put(route('settings.profile.update'), [
+    $response = $this->patch(route('profile.update'), [
         'name' => 'Updated Name Again',
         'email' => $user->email,
         'is_active' => 'on', // Include is_active
