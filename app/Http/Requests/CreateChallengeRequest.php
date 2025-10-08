@@ -11,7 +11,9 @@ class CreateChallengeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // Die eigentliche Autorisierung erfolgt im Controller mit $this->authorize()
+        // Da die Autorisierung komplexe Datenbankabfragen erfordert,
+        // die von den Eingabedaten abhängen, belassen wir dies im Controller
+        return true;
     }
 
     /**

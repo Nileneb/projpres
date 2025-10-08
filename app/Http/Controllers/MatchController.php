@@ -8,30 +8,42 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UpdateChallengeRequest;
 use App\Http\Requests\SubmitMatchRequest;
 use App\Http\Requests\CreateChallengeRequest;
+use App\Http\Requests\SelectTeamRequest;
 
 class MatchController extends Controller {
     public function index() {
-        $matches = Matches::with(['creator', 'solver', 'votes'])->get();
-        return view('matches.index', compact('matches'));
+        $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
+        $currentWeek = $teamAssignmentService->getCurrentWeekLabel();
+
+        $matches = Matches::where('week_label', $currentWeek)
+                    ->with(['creator', 'solver', 'votes'])
+                    ->get();
+
+        return view('matches.index', compact('matches', 'currentWeek'));
     }
 
     public function show(Matches $match){
         return view('matches.show', compact('match'));
     }
 
-    public function create(Request $request) {
+    /**
+     * Zeigt das Formular zur Auswahl eines Teams oder direkt das Erstellungsformular einer Challenge an
+     *
+     * @param Request $request Die allgemeine Request-Instanz
+     * @param SelectTeamRequest|null $selectRequest Optional, wird automatisch injiziert wenn Parameter vorhanden sind
+     * @return \Illuminate\View\View
+     */
+    public function create(Request $request, ?SelectTeamRequest $selectRequest = null) {
         // Get current week label and possible solver teams
         $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
         $weekLabel = $teamAssignmentService->getCurrentWeekLabel();
 
         // Get solver team if provided, otherwise show selection form
         if ($request->has('solver_team_id') && $request->has('week_label')) {
-            $validated = $request->validate([
-                'solver_team_id' => 'required|exists:teams,id',
-                'week_label' => 'required|string'
-            ]);
-            $solverTeam = Team::findOrFail($request->solver_team_id);
-            $weekLabel = $request->week_label;
+            // Wenn die Validierung fehlschlägt, wird automatisch zur vorherigen Seite zurückgeleitet
+            $validated = $selectRequest->validated();
+            $solverTeam = Team::findOrFail($validated['solver_team_id']);
+            $weekLabel = $validated['week_label'];
         } else {
             // Get all teams for the current week
             $solverTeams = Team::where('week_label', $weekLabel)->get();
@@ -42,16 +54,11 @@ class MatchController extends Controller {
         return view('matches.create', compact('solverTeam', 'weekLabel', 'timeLimit'));
     }
 
-    public function store(Request $request) {
-        $validated = $request->validate([
-            'solver_team_id' => 'required|exists:teams,id',
-            'challenge_text' => 'required|string|min:10',
-            'time_limit_minutes' => 'required|integer|min:1|max:60',
-            'week_label' => 'required|string'
-        ]);
+    public function store(CreateChallengeRequest $request) {
+        $validated = $request->validated();
 
         // Finde das Team des aktuellen Benutzers für die angegebene Woche
-        $user = request()->user();
+        $user = \Illuminate\Support\Facades\Auth::user();
         $creatorTeam = $user->teams()
             ->where('week_label', $validated['week_label'])
             ->firstOrFail();
@@ -127,17 +134,9 @@ class MatchController extends Controller {
         return view('matches.submit', compact('match'));
     }
 
-    public function submitSolution(Request $request, Matches $match) {
-        // Ensure the current user is from the solver team
-        $user = request()->user();
-        $isInSolverTeam = $user->teams()
-            ->where('teams.id', $match->solver_team_id)
-            ->where('week_label', $match->week_label)
-            ->exists();
-
-        if (!$isInSolverTeam) {
-            abort(403, 'You are not authorized to submit a solution for this challenge');
-        }
+    public function submitSolution(SubmitMatchRequest $request, Matches $match) {
+        // Autorisierung mit Gate durchführen
+        \Illuminate\Support\Facades\Gate::authorize('submit', $match);
 
         // Team-Zuweisung Service laden
         $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
@@ -147,9 +146,7 @@ class MatchController extends Controller {
             return back()->with('error', 'Dein Team hat bereits eine Challenge für diese Woche gelöst.');
         }
 
-        $validated = $request->validate([
-            'submission_url' => 'required|url'
-        ]);
+        $validated = $request->validated();
 
         $match->update([
             'submission_url' => $validated['submission_url'],

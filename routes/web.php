@@ -6,6 +6,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\HistoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,6 +25,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Team routes
     Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+    Route::post('/teams/archive', [TeamController::class, 'archive'])
+        ->middleware(['can:manage-teams'])
+        ->name('teams.archive');
 
     // Team assignment routes
     Route::get('/teams/generate', [App\Http\Controllers\TeamAssignmentController::class, 'index'])
@@ -50,6 +54,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Leaderboard route
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+
+    // History route
+    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
 
 require __DIR__.'/auth.php';

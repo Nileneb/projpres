@@ -102,6 +102,94 @@ class TestDataSeeder extends Seeder
             'submission_url' => 'https://example.com/meme.jpg',
         ]);
 
+        // Archivierte Woche erstellen
+        $archivedWeekLabel = '2025-KW37';
+        $this->command->info('Creating archived teams for week ' . $archivedWeekLabel);
+
+        // Archivierte Teams erstellen
+        $archivedTeam1 = Team::create(['week_label' => $archivedWeekLabel, 'name' => 'Legacy Team A', 'is_archived' => true]);
+        $archivedTeam2 = Team::create(['week_label' => $archivedWeekLabel, 'name' => 'Legacy Team B', 'is_archived' => true]);
+
+        // Benutzer den archivierten Teams zuordnen (überlappend mit aktuellen Teams)
+        $teamAUsers = $allUsers->slice(0, 5);
+        $teamBUsers = $allUsers->slice(5, 6);
+
+        foreach ($teamAUsers as $user) {
+            Participant::create([
+                'team_id' => $archivedTeam1->id,
+                'user_id' => $user->id,
+                'role' => 'member'
+            ]);
+        }
+
+        foreach ($teamBUsers as $user) {
+            Participant::create([
+                'team_id' => $archivedTeam2->id,
+                'user_id' => $user->id,
+                'role' => 'member'
+            ]);
+        }
+
+        // Archivierte Matches erstellen
+        $archivedMatch = MatchModel::create([
+            'week_label' => $archivedWeekLabel,
+            'creator_team_id' => $archivedTeam1->id,
+            'solver_team_id' => $archivedTeam2->id,
+            'challenge_text' => 'Ein Archiv-Challenge mit Lösung.',
+            'time_limit_minutes' => 15,
+            'status' => 'submitted',
+            'started_at' => now()->subWeeks(1),
+            'deadline' => now()->subWeeks(1)->addMinutes(15),
+            'submitted_at' => now()->subWeeks(1)->addMinutes(14),
+            'submission_url' => 'https://example.com/archived-solution.jpg',
+        ]);
+
+        // Add votes to test the leaderboard
+        $this->command->info('Creating votes for testing the leaderboard...');
+
+        // Determine users who are not in teams for the current match
+        $team1Users = $team1->users->pluck('id')->toArray();
+        $team2Users = $team2->users->pluck('id')->toArray();
+        $team3Users = $team3->users->pluck('id')->toArray();
+
+        // Find users who can vote on match3 (not in team1 or team3)
+        $validVotersForMatch3 = $allUsers->filter(function($user) use ($team1Users, $team3Users) {
+            return !in_array($user->id, $team1Users) && !in_array($user->id, $team3Users);
+        });
+
+        // Create votes for match3
+        foreach ($validVotersForMatch3 as $user) {
+            // Generate random scores between 1-5
+            $score = rand(1, 5);
+
+            // Create vote
+            \App\Models\Vote::create([
+                'match_id' => $match3->id,
+                'user_id' => $user->id,
+                'score' => $score,
+                'comment' => "Rating: {$score}/5 - " . ($score >= 3 ? 'Good job!' : 'Could be improved.'),
+            ]);
+        }
+
+        // Create votes for the archived match
+        $archivedTeam1Users = $archivedTeam1->users->pluck('id')->toArray();
+        $archivedTeam2Users = $archivedTeam2->users->pluck('id')->toArray();
+
+        $validVotersForArchivedMatch = $allUsers->filter(function($user) use ($archivedTeam1Users, $archivedTeam2Users) {
+            return !in_array($user->id, $archivedTeam1Users) && !in_array($user->id, $archivedTeam2Users);
+        });
+
+        foreach ($validVotersForArchivedMatch as $user) {
+            $score = rand(1, 5);
+
+            \App\Models\Vote::create([
+                'match_id' => $archivedMatch->id,
+                'user_id' => $user->id,
+                'score' => $score,
+                'comment' => "Archive Rating: {$score}/5",
+            ]);
+        }
+
         $this->command->info('Test data has been successfully seeded.');
     }
 }

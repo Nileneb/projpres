@@ -16,10 +16,18 @@ class LeaderboardController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Using the SQL query from copilot-instructions.md but in Laravel's query builder
-        $leaderboard = User::select('users.id', 'users.name', DB::raw('COALESCE(SUM(votes.score), 0) as total_points'))
+        // Get filter options
+        $timeframe = $request->get('timeframe', 'all_time'); // 'all_time' or 'current_week'
+        $includeArchived = $request->has('include_archived') && $request->include_archived == 1;
+
+        // Get current week label
+        $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
+        $currentWeekLabel = $teamAssignmentService->getCurrentWeekLabel();
+
+        // Base query builder
+        $query = User::select('users.id', 'users.name', DB::raw('COALESCE(SUM(votes.score), 0) as total_points'))
             ->leftJoin('participants', 'participants.user_id', '=', 'users.id')
             ->leftJoin('teams', 'teams.id', '=', 'participants.team_id')
             ->leftJoin('matches', function ($join) {
@@ -29,11 +37,22 @@ class LeaderboardController extends Controller
                             ->orWhereColumn('matches.solver_team_id', '=', 'teams.id');
                     });
             })
-            ->leftJoin('votes', 'votes.match_id', '=', 'matches.id')
-            ->groupBy('users.id', 'users.name')
+            ->leftJoin('votes', 'votes.match_id', '=', 'matches.id');
+
+        // Apply filters
+        if ($timeframe === 'current_week') {
+            $query->where('matches.week_label', $currentWeekLabel);
+        }
+
+        if (!$includeArchived) {
+            $query->where('teams.is_archived', false);
+        }
+
+        // Complete and execute the query
+        $leaderboard = $query->groupBy('users.id', 'users.name')
             ->orderByDesc('total_points')
             ->get();
 
-        return view('leaderboard.index', compact('leaderboard'));
+        return view('leaderboard.index', compact('leaderboard', 'timeframe', 'includeArchived', 'currentWeekLabel'));
     }
 }

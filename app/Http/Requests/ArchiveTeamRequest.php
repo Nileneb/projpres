@@ -3,17 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class SubmitMatchRequest extends FormRequest
+class ArchiveTeamRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        // Da die Autorisierung komplexe Datenbankabfragen erfordert,
-        // die von den Route-Parametern abhängen, belassen wir dies im Controller
-        return true;
+        return Gate::allows('manage-teams');
     }
 
     /**
@@ -24,7 +23,8 @@ class SubmitMatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'submission_url' => ['required', 'url'],
+            'team_id' => 'sometimes|integer|exists:teams,id',
+            'week_label' => 'sometimes|string',
         ];
     }
 }

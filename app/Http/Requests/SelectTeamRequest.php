@@ -4,16 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubmitMatchRequest extends FormRequest
+class SelectTeamRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        // Da die Autorisierung komplexe Datenbankabfragen erfordert,
-        // die von den Route-Parametern abhängen, belassen wir dies im Controller
-        return true;
+        return true; // Autorisierung erfolgt über Middleware/Gate
     }
 
     /**
@@ -24,7 +22,8 @@ class SubmitMatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'submission_url' => ['required', 'url'],
+            'solver_team_id' => 'required|exists:teams,id',
+            'week_label' => 'required|string'
         ];
     }
 }

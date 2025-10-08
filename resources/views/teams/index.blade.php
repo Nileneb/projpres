@@ -1,4 +1,12 @@
-<x-layouts.app :title="__('Teams')">
+<x-layouts.app :ti                    @if(request()->get('include_archived'))
+                        <x-badge color="amber" size="lg">
+                            Showing Archived Teams
+                        </x-badge>
+                    @else
+                        <x-badge color="green" size="lg">
+                            Showing Active Teams
+                        </x-badge>
+                    @endifTeams')">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-white leading-tight">
             {{ __('Teams') }}
@@ -7,11 +15,44 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Archive Filter Toggle -->
+            <div class="mb-4 flex justify-between">
+                <div>
+                    <a href="{{ route('teams.index', ['show_archived' => $showArchived ? 0 : 1]) }}"
+                       class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+                        {{ $showArchived ? 'Show Active Teams' : 'Show Archived Teams' }}
+                    </a>
+                </div>
+                <div>
+                    @if($showArchived)
+                        <span class="px-3 py-1 bg-amber-100 text-amber-800 text-sm rounded-full">
+                            Showing Archived Teams
+                        </span>
+                    @else
+                        <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                            Showing Active Teams
+                        </span>
+                    @endif
+                </div>
+            </div>
+
             <div class="bg-white dark:bg-zinc-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @forelse ($weekLabels as $weekLabel)
                         <div class="mb-8">
-                            <h2 class="text-xl font-bold mb-4">{{ $weekLabel }}</h2>
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-xl font-bold">{{ $weekLabel }}</h2>
+
+                                @can('manage-teams')
+                                <form method="POST" action="{{ route('teams.archive') }}" class="inline">
+                                    @csrf
+                                    <input type="hidden" name="week_label" value="{{ $weekLabel }}">
+                                    <button type="submit" class="ml-2 inline-flex items-center px-2 py-1 bg-amber-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-600">
+                                        {{ $showArchived ? 'Unarchive Week' : 'Archive Week' }}
+                                    </button>
+                                </form>
+                                @endcan
+                            </div>
 
                             <div class="space-y-4">
                                 @foreach ($teamsByWeek[$weekLabel] as $team)
