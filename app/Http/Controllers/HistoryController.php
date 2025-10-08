@@ -36,6 +36,9 @@ class HistoryController extends Controller
 
         // Ausgewählte Woche (Standard: neueste verfügbare Woche aus der aktuellen Paginationsseite)
         $selectedWeek = $request->input('week', $paginatedWeeks[0] ?? null);
+        
+        // Filter für archivierte/nicht archivierte Teams
+        $showArchived = $request->boolean('show_archived', true);
 
         // Wenn keine historische Woche verfügbar ist
         if (empty($selectedWeek)) {
@@ -48,20 +51,37 @@ class HistoryController extends Controller
                 'matches' => collect(),
                 'page' => 1,
                 'hasMorePages' => false,
+                'showArchived' => $showArchived,
                 'hasPreviousPages' => false,
                 'totalWeeks' => 0,
             ]);
         }
 
         // Teams für die ausgewählte Woche laden
-        $teams = Team::where('week_label', $selectedWeek)
-            ->with('users')
+        $teamsQuery = Team::where('week_label', $selectedWeek);
+        
+        // Filter für archivierte Teams anwenden
+        if (!$showArchived) {
+            $teamsQuery->where('is_archived', false);
+        }
+        
+        $teams = $teamsQuery->with('users')
             ->orderBy('name')
             ->get();
 
+        // Team-IDs aus der Abfrage
+        $teamIds = $teams->pluck('id')->toArray();
+
         // Matches für die ausgewählte Woche laden
-        $matches = Matches::where('week_label', $selectedWeek)
-            ->with(['creator', 'solver', 'votes'])
+        $matchesQuery = Matches::where('week_label', $selectedWeek);
+        
+        // Filter für archivierte Teams anwenden
+        if (!$showArchived) {
+            $matchesQuery->whereIn('creator_team_id', $teamIds)
+                         ->whereIn('solver_team_id', $teamIds);
+        }
+        
+        $matches = $matchesQuery->with(['creator', 'solver', 'votes'])
             ->get();
 
         return view('history.index', compact(
@@ -74,7 +94,8 @@ class HistoryController extends Controller
             'page',
             'hasMorePages',
             'hasPreviousPages',
-            'totalWeeks'
+            'totalWeeks',
+            'showArchived'
         ));
     }
 }
