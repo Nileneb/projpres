@@ -54,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Leaderboard route
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
-    
+
     // History route
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });

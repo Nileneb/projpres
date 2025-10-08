@@ -17,7 +17,7 @@ class HistoryController extends Controller
     {
         // Aktuelle Woche holen
         $currentWeek = $teamService->getCurrentWeekLabel();
-        
+
         // Verfügbare Wochen-Labels aus der Datenbank holen (außer der aktuellen)
         $availableWeeks = Team::select('week_label')
             ->where('week_label', '!=', $currentWeek)
@@ -25,10 +25,10 @@ class HistoryController extends Controller
             ->orderBy('week_label', 'desc')
             ->pluck('week_label')
             ->toArray();
-            
+
         // Ausgewählte Woche (Standard: neueste verfügbare Woche)
         $selectedWeek = $request->input('week', $availableWeeks[0] ?? null);
-        
+
         // Wenn keine historische Woche verfügbar ist
         if (empty($selectedWeek)) {
             return view('history.index', [
@@ -39,18 +39,18 @@ class HistoryController extends Controller
                 'matches' => collect(),
             ]);
         }
-        
+
         // Teams für die ausgewählte Woche laden
         $teams = Team::where('week_label', $selectedWeek)
             ->with('users')
             ->orderBy('name')
             ->get();
-            
+
         // Matches für die ausgewählte Woche laden
         $matches = Matches::where('week_label', $selectedWeek)
             ->with(['creator', 'solver', 'votes'])
             ->get();
-            
+
         return view('history.index', compact('currentWeek', 'availableWeeks', 'selectedWeek', 'teams', 'matches'));
     }
 }

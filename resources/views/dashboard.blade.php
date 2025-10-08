@@ -46,16 +46,16 @@
                 // Nur aktive (nicht archivierte) Teams des Benutzers für die aktuelle Woche laden
                 $activeTeams = auth()->user()->teams()->where('week_label', $currentWeek)
                                     ->where('is_archived', false)->get();
-                
+
                 // Challenges filtern nach aktueller Woche und aktiven Teams
                 $createdMatches = collect();
                 $solverMatches = collect();
-                
+
                 foreach ($activeTeams as $team) {
                     $createdMatches = $createdMatches->merge(
                         $team->createdMatches()->where('week_label', $currentWeek)->get()
                     );
-                    
+
                     $solverMatches = $solverMatches->merge(
                         $team->solvedMatches()->where('week_label', $currentWeek)->get()
                     );

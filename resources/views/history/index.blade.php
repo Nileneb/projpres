@@ -5,7 +5,7 @@
                 <div class="p-6 text-gray-900 dark:text-white">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-xl font-semibold">{{ __('Challenge History') }}</h2>
-                        
+
                         @if(count($availableWeeks) > 0)
                             <div class="flex items-center">
                                 <span class="mr-2">{{ __('Select week:') }}</span>
@@ -21,7 +21,7 @@
                             </div>
                         @endif
                     </div>
-                    
+
                     @if(empty($selectedWeek))
                         <div class="text-center py-8">
                             <p class="text-gray-500 dark:text-gray-400">{{ __('No historical data available.') }}</p>
@@ -30,7 +30,7 @@
                     @else
                         <div class="mb-8">
                             <h3 class="text-lg font-medium mb-4">{{ __('Teams for') }} {{ $selectedWeek }}</h3>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 @foreach($teams as $team)
                                     <div class="border rounded-lg dark:border-zinc-700 p-4">
@@ -49,10 +49,10 @@
                                 @endforeach
                             </div>
                         </div>
-                        
+
                         <div>
                             <h3 class="text-lg font-medium mb-4">{{ __('Challenges for') }} {{ $selectedWeek }}</h3>
-                            
+
                             @if($matches->count() > 0)
                                 <div class="space-y-6">
                                     @foreach($matches as $match)
@@ -65,7 +65,7 @@
                                                     <div class="text-gray-700 dark:text-gray-300 mb-4">
                                                         <p class="font-semibold">Challenge:</p>
                                                         <p class="mb-2">{{ $match->challenge_text }}</p>
-                                                        
+
                                                         @if($match->status == 'submitted' || $match->status == 'closed')
                                                             @if($match->submission_url)
                                                                 <p class="font-semibold">Solution:</p>
@@ -86,12 +86,12 @@
                                                 </div>
                                                 <div>
                                                     <span class="px-2.5 py-1 text-xs font-medium rounded-full
-                                                        {{ $match->status == 'submitted' || $match->status == 'closed' ? 
+                                                        {{ $match->status == 'submitted' || $match->status == 'closed' ?
                                                            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                                                            'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">
                                                         {{ ucfirst($match->status) }}
                                                     </span>
-                                                    
+
                                                     @if($match->votes->count() > 0)
                                                         <div class="mt-2 text-right">
                                                             <span class="text-gray-700 dark:text-gray-300">
@@ -99,7 +99,7 @@
                                                                 ({{ $match->votes->count() }} {{ __('votes') }})
                                                             </span>
                                                         </div>
-                                                        
+
                                                         @if($match->votes->where('comment', '!=', null)->count() > 0)
                                                             <div class="mt-4 border-t border-gray-200 dark:border-zinc-700 pt-4">
                                                                 <h5 class="font-medium mb-2">{{ __('Comments:') }}</h5>
@@ -137,7 +137,7 @@
                     @endif
                 </div>
             </div>
-            
+
             <div class="mt-4">
                 <a href="{{ route('dashboard') }}" class="text-indigo-600 dark:text-indigo-400 hover:underline">
                     &larr; {{ __('Back to Dashboard') }}
