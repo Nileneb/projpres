@@ -36,9 +36,9 @@
                                                         View submission
                                                     </a>
                                                 <div class="flex items-center">
-                                                    <span class="font-semibold mr-2">Status:</span> 
+                                                    <span class="font-semibold mr-2">Status:</span>
                                                     <x-match-status :status="$match->status" />
-                                                    
+
                                                     @if($match->status == 'in_progress' && $match->solver_team_id == auth()->user()->teams->pluck('id')->contains($match->solver_team_id))
                                                         <a href="{{ route('matches.submit', $match) }}" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                                             Submit Solution

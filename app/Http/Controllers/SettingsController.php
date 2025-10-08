@@ -42,7 +42,7 @@ class SettingsController extends Controller
 
         // Set is_active to false when checkbox is not present in the request
         $user->is_active = $request->has('is_active');
-        
+
         $user->fill($validated);
 
         if ($user->isDirty('email')) {

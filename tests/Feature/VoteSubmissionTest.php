@@ -19,21 +19,21 @@ test('users can vote on submitted matches with score', function () {
     $creatorUser = User::factory()->create();
     $solverUser = User::factory()->create();
     $voterUser = User::factory()->create();
-    
+
     $creatorTeam = Team::factory()->create(['week_label' => '2023-KW01']);
     $solverTeam = Team::factory()->create(['week_label' => '2023-KW01']);
-    
+
     // Assign users to teams
     Participant::factory()->create([
         'user_id' => $creatorUser->id,
         'team_id' => $creatorTeam->id,
     ]);
-    
+
     Participant::factory()->create([
         'user_id' => $solverUser->id,
         'team_id' => $solverTeam->id,
     ]);
-    
+
     // Create a match
     $match = Matches::factory()->create([
         'creator_team_id' => $creatorTeam->id,
@@ -41,7 +41,7 @@ test('users can vote on submitted matches with score', function () {
         'status' => 'submitted',
         'week_label' => '2023-KW01',
     ]);
-    
+
     // Submit a vote as voter
     actingAs($voterUser)
         ->post(route('votes.store', $match), [
@@ -49,7 +49,7 @@ test('users can vote on submitted matches with score', function () {
         ])
         ->assertRedirect()
         ->assertSessionHas('success');
-    
+
     // Check if vote was saved correctly
     $this->assertDatabaseHas('votes', [
         'match_id' => $match->id,
@@ -64,21 +64,21 @@ test('users can vote on submitted matches with score and comment', function () {
     $creatorUser = User::factory()->create();
     $solverUser = User::factory()->create();
     $voterUser = User::factory()->create();
-    
+
     $creatorTeam = Team::factory()->create(['week_label' => '2023-KW01']);
     $solverTeam = Team::factory()->create(['week_label' => '2023-KW01']);
-    
+
     // Assign users to teams
     Participant::factory()->create([
         'user_id' => $creatorUser->id,
         'team_id' => $creatorTeam->id,
     ]);
-    
+
     Participant::factory()->create([
         'user_id' => $solverUser->id,
         'team_id' => $solverTeam->id,
     ]);
-    
+
     // Create a match
     $match = Matches::factory()->create([
         'creator_team_id' => $creatorTeam->id,
@@ -86,9 +86,9 @@ test('users can vote on submitted matches with score and comment', function () {
         'status' => 'submitted',
         'week_label' => '2023-KW01',
     ]);
-    
+
     $comment = "This was a great challenge!";
-    
+
     // Submit a vote as voter with comment
     actingAs($voterUser)
         ->post(route('votes.store', $match), [
@@ -97,7 +97,7 @@ test('users can vote on submitted matches with score and comment', function () {
         ])
         ->assertRedirect()
         ->assertSessionHas('success');
-    
+
     // Check if vote with comment was saved correctly
     $this->assertDatabaseHas('votes', [
         'match_id' => $match->id,
@@ -111,21 +111,21 @@ test('users cannot vote on matches they created or solved', function () {
     // Create users and teams
     $creatorUser = User::factory()->create();
     $solverUser = User::factory()->create();
-    
+
     $creatorTeam = Team::factory()->create(['week_label' => '2023-KW01']);
     $solverTeam = Team::factory()->create(['week_label' => '2023-KW01']);
-    
+
     // Assign users to teams
     Participant::factory()->create([
         'user_id' => $creatorUser->id,
         'team_id' => $creatorTeam->id,
     ]);
-    
+
     Participant::factory()->create([
         'user_id' => $solverUser->id,
         'team_id' => $solverTeam->id,
     ]);
-    
+
     // Create a match
     $match = Matches::factory()->create([
         'creator_team_id' => $creatorTeam->id,
@@ -133,14 +133,14 @@ test('users cannot vote on matches they created or solved', function () {
         'status' => 'submitted',
         'week_label' => '2023-KW01',
     ]);
-    
+
     // Creator user tries to vote
     actingAs($creatorUser)
         ->post(route('votes.store', $match), [
             'score' => 5,
         ])
         ->assertForbidden();
-    
+
     // Solver user tries to vote
     actingAs($solverUser)
         ->post(route('votes.store', $match), [
@@ -154,21 +154,21 @@ test('users can update their existing vote', function () {
     $creatorUser = User::factory()->create();
     $solverUser = User::factory()->create();
     $voterUser = User::factory()->create();
-    
+
     $creatorTeam = Team::factory()->create(['week_label' => '2023-KW01']);
     $solverTeam = Team::factory()->create(['week_label' => '2023-KW01']);
-    
+
     // Assign users to teams
     Participant::factory()->create([
         'user_id' => $creatorUser->id,
         'team_id' => $creatorTeam->id,
     ]);
-    
+
     Participant::factory()->create([
         'user_id' => $solverUser->id,
         'team_id' => $solverTeam->id,
     ]);
-    
+
     // Create a match
     $match = Matches::factory()->create([
         'creator_team_id' => $creatorTeam->id,
@@ -176,7 +176,7 @@ test('users can update their existing vote', function () {
         'status' => 'submitted',
         'week_label' => '2023-KW01',
     ]);
-    
+
     // Create initial vote
     Vote::factory()->create([
         'match_id' => $match->id,
@@ -184,7 +184,7 @@ test('users can update their existing vote', function () {
         'score' => 3,
         'comment' => "Initial comment"
     ]);
-    
+
     // Update the vote
     actingAs($voterUser)
         ->post(route('votes.store', $match), [
@@ -193,7 +193,7 @@ test('users can update their existing vote', function () {
         ])
         ->assertRedirect()
         ->assertSessionHas('success');
-    
+
     // Check if vote was updated correctly
     $this->assertDatabaseHas('votes', [
         'match_id' => $match->id,
@@ -201,7 +201,7 @@ test('users can update their existing vote', function () {
         'score' => 4,
         'comment' => "Updated comment",
     ]);
-    
+
     // Check that there's only one vote from this user for this match
     $this->assertEquals(1, Vote::where('match_id', $match->id)->where('user_id', $voterUser->id)->count());
 });

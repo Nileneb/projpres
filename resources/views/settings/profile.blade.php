@@ -57,7 +57,7 @@
                                     </div>
                                 @endif
                             </div>
-                            
+
                             <div class="mt-4">
                                 <label for="is_active" class="inline-flex items-center">
                                     <input id="is_active" name="is_active" type="checkbox" value="1" class="rounded dark:bg-zinc-900 border-gray-300 dark:border-zinc-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-zinc-800" {{ Auth::user()->is_active ? 'checked' : '' }}>

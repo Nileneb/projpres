@@ -26,7 +26,7 @@ class SubmitMatchRequest extends FormRequest
             'submission_url' => ['required', 'url'],
         ];
     }
-    
+
     /**
      * Get custom messages for validator errors.
      *

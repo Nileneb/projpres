@@ -14,7 +14,7 @@ class CreateChallengeRequest extends FormRequest
         // Autorisierung erfolgt im Controller mit komplexen Checks
         return true;
     }
-    
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -29,7 +29,7 @@ class CreateChallengeRequest extends FormRequest
             'time_limit_minutes' => ['required', 'integer', 'min:5', 'max:60'],
         ];
     }
-    
+
     /**
      * Get custom messages for validator errors.
      *
