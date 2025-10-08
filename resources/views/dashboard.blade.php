@@ -96,9 +96,47 @@
                                     </div>
                                     <div>
                                         <x-match-status :status="$match->status" />
-                                        <div class="mt-2">
-                                            <a href="{{ route('matches.show', $match) }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
-                                                Details →
+
+                                        @if($match->status == 'in_progress' && $match->deadline)
+                                            <div class="mt-1 text-xs">
+                                                @php
+                                                    $now = now();
+                                                    $deadline = $match->deadline;
+                                                    $remainingTime = $now->diffInMinutes($deadline, false);
+                                                @endphp
+
+                                                @if($remainingTime > 0)
+                                                    <div class="text-amber-600 dark:text-amber-400 font-medium">
+                                                        {{ $remainingTime }} min verbleibend
+                                                    </div>
+                                                @else
+                                                    <div class="text-red-600 dark:text-red-400 font-medium">
+                                                        Zeit abgelaufen
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
+
+                                        <div class="mt-2 flex justify-end">
+                                            @php
+                                                $isInCreatorTeam = auth()->user()->teams->contains($match->creator_team_id);
+                                            @endphp
+
+                                            @if($isInCreatorTeam && ($match->status == 'created' || $match->status == 'in_progress'))
+                                                <a href="{{ route('matches.show', $match) }}#update-challenge" class="inline-flex items-center px-2.5 py-1.5 bg-amber-600 border border-transparent rounded text-xs font-medium text-white hover:bg-amber-700 mr-2 transition-colors">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                    Edit
+                                                </a>
+                                            @endif
+
+                                            <a href="{{ route('matches.show', $match) }}" class="inline-flex items-center px-2.5 py-1.5 bg-gray-200 dark:bg-gray-700 border border-transparent rounded text-xs font-medium text-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                Details
                                             </a>
                                         </div>
                                     </div>
@@ -144,25 +182,67 @@
                                     <div>
                                         <x-match-status :status="$match->status" />
 
+                                        @if($match->status == 'in_progress' && $match->deadline)
+                                            <div class="mt-1 text-xs">
+                                                @php
+                                                    $now = now();
+                                                    $deadline = $match->deadline;
+                                                    $remainingTime = $now->diffInMinutes($deadline, false);
+                                                @endphp
+
+                                                @if($remainingTime > 0)
+                                                    <div class="text-amber-600 dark:text-amber-400 font-medium">
+                                                        {{ $remainingTime }} min verbleibend
+                                                    </div>
+                                                @else
+                                                    <div class="text-red-600 dark:text-red-400 font-medium">
+                                                        Zeit abgelaufen
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
+
                                         <div class="mt-2 flex justify-end">
                                             @php
                                                 $isInSolverTeam = auth()->user()->teams->contains($match->solver_team_id);
+                                                $isInCreatorTeam = auth()->user()->teams->contains($match->creator_team_id);
                                             @endphp
 
                                             @if($match->status == 'in_progress' && $isInSolverTeam)
-                                                <a href="{{ route('matches.submit', $match) }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline mr-2">
-                                                    Submit →
+                                                <a href="{{ route('matches.submit', $match) }}" class="inline-flex items-center px-2.5 py-1.5 bg-green-600 border border-transparent rounded text-xs font-medium text-white hover:bg-green-700 mr-2 transition-colors">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                    Submit
                                                 </a>
                                             @elseif($match->status == 'created' && $isInSolverTeam)
                                                 <form method="POST" action="{{ route('matches.start', $match) }}" class="inline mr-2">
                                                     @csrf
-                                                    <button type="submit" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
-                                                        Start →
+                                                    <button type="submit" class="inline-flex items-center px-2.5 py-1.5 bg-blue-600 border border-transparent rounded text-xs font-medium text-white hover:bg-blue-700 transition-colors">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        Start
                                                     </button>
                                                 </form>
                                             @endif
-                                            <a href="{{ route('matches.show', $match) }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
-                                                Details →
+
+                                            @if($isInCreatorTeam && ($match->status == 'created' || $match->status == 'in_progress'))
+                                                <a href="{{ route('matches.show', $match) }}#update-challenge" class="inline-flex items-center px-2.5 py-1.5 bg-amber-600 border border-transparent rounded text-xs font-medium text-white hover:bg-amber-700 mr-2 transition-colors">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                    Edit
+                                                </a>
+                                            @endif
+
+                                            <a href="{{ route('matches.show', $match) }}" class="inline-flex items-center px-2.5 py-1.5 bg-gray-200 dark:bg-gray-700 border border-transparent rounded text-xs font-medium text-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                Details
                                             </a>
                                         </div>
                                     </div>
