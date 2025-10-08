@@ -12,8 +12,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Wöchentliche Transition jeden Sonntag um Mitternacht ausführen
-        $schedule->command('app:weekly-transition')->sundays()->at('00:00');
+        // Wöchentliche Transition jeden Sonntag um Mitternacht ausführen (Europe/Berlin Timezone)
+        $schedule->command('app:weekly-transition')
+            ->sundays()
+            ->at('00:00')
+            ->timezone('Europe/Berlin');
     }
 
     /**

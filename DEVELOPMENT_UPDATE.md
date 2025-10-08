@@ -45,6 +45,7 @@
 2. Add more user feedback for deadline enforcement
 3. Create notification system for weekly transitions
 4. Update README with new features
+5. Consider implementing timezone-aware notifications for weekly transitions
 
 ## 🛠️ Testing Instructions:
 
@@ -52,3 +53,4 @@
 2. Test active user filtering: `php artisan test:active-users`
 3. Manually test profile settings page to verify is_active checkbox works
 4. Try submitting a solution after deadline to verify enforcement
+5. Test scheduler: `php artisan schedule:list` to verify timezone settings
