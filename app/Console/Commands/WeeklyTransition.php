@@ -76,7 +76,7 @@ class WeeklyTransition extends Command
         // 3. Neue Teams für die nächste Woche erstellen (wenn Benutzer vorhanden sind)
         $users = User::where('is_active', true)->get();
         $userCount = $users->count();
-        
+
         $this->info("Found {$userCount} active users for new teams.");
 
         if ($userCount < 4) {
