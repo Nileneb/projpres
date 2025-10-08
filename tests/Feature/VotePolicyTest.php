@@ -16,12 +16,12 @@ class VotePolicyTest extends TestCase
 
     public function test_user_can_vote_on_match_if_not_in_creator_or_solver_team()
     {
-        // Erstelle Benutzer und Teams
+        // Create user and teams
         $user = User::factory()->create();
         $creatorTeam = Team::factory()->create(['week_label' => '2023-KW01']);
         $solverTeam = Team::factory()->create(['week_label' => '2023-KW01']);
 
-        // Erstelle ein Match mit submitted Status
+        // Create a match with submitted status
         $match = Matches::factory()->create([
             'creator_team_id' => $creatorTeam->id,
             'solver_team_id' => $solverTeam->id,
@@ -29,7 +29,7 @@ class VotePolicyTest extends TestCase
             'week_label' => '2023-KW01',
         ]);
 
-        // Teste, dass der Benutzer abstimmen kann (da er in keinem der Teams ist)
+        // Assert that the user can vote (since they are not in any team)
         $this->actingAs(User::find($user->id));
 
         $this->assertTrue($user->can('create', [Vote::class, $match]));
@@ -42,7 +42,7 @@ class VotePolicyTest extends TestCase
         $creatorTeam = Team::factory()->create(['week_label' => '2023-KW01']);
         $solverTeam = Team::factory()->create(['week_label' => '2023-KW01']);
 
-        // Füge den Benutzer zum Creator-Team hinzu
+        // Add the user to the creator team
         Participant::factory()->create([
             'user_id' => $user->id,
             'team_id' => $creatorTeam->id,
@@ -56,7 +56,7 @@ class VotePolicyTest extends TestCase
             'week_label' => '2023-KW01',
         ]);
 
-        // Teste, dass der Benutzer NICHT abstimmen kann (da er im Creator-Team ist)
+        // Assert that the user cannot vote (since they are in the creator team)
         $this->actingAs(User::find($user->id));
 
         $this->assertFalse($user->can('create', [Vote::class, $match]));
@@ -69,7 +69,7 @@ class VotePolicyTest extends TestCase
         $creatorTeam = Team::factory()->create(['week_label' => '2023-KW01']);
         $solverTeam = Team::factory()->create(['week_label' => '2023-KW01']);
 
-        // Füge den Benutzer zum Solver-Team hinzu
+        // Add the user to the solver team
         Participant::factory()->create([
             'user_id' => $user->id,
             'team_id' => $solverTeam->id,
@@ -83,7 +83,7 @@ class VotePolicyTest extends TestCase
             'week_label' => '2023-KW01',
         ]);
 
-        // Teste, dass der Benutzer NICHT abstimmen kann (da er im Solver-Team ist)
+        // Assert that the user cannot vote (since they are in the solver team)
         $this->actingAs(User::find($user->id));
 
         $this->assertFalse($user->can('create', [Vote::class, $match]));
@@ -96,7 +96,7 @@ class VotePolicyTest extends TestCase
         $creatorTeam = Team::factory()->create(['week_label' => '2023-KW01']);
         $solverTeam = Team::factory()->create(['week_label' => '2023-KW01']);
 
-        // Erstelle ein Match mit created Status (nicht submitted)
+        // Create a match with created status (not submitted)
         $match = Matches::factory()->create([
             'creator_team_id' => $creatorTeam->id,
             'solver_team_id' => $solverTeam->id,
@@ -104,7 +104,7 @@ class VotePolicyTest extends TestCase
             'week_label' => '2023-KW01',
         ]);
 
-        // Teste, dass der Benutzer nicht abstimmen kann (da der Match-Status nicht "submitted" ist)
+        // Assert that the user cannot vote (since the match status is not "submitted")
         $this->actingAs(User::find($user->id));
 
         $this->assertFalse($user->can('create', [Vote::class, $match]));
