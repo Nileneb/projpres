@@ -21,20 +21,12 @@ class StoreVoteRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Primär score validieren, aber auch rating als Fallback akzeptieren
         return [
-            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'score' => ['required_without:rating', 'integer', 'min:1', 'max:5'],
+            'rating' => ['required_without:score', 'integer', 'min:1', 'max:5'],
             'comment' => ['nullable', 'string'],
         ];
-    }
-
-    /**
-     * Prepare the data for validation.
-     *
-     * @return void
-     */
-    protected function prepareForValidation()
-    {
-        // Kein Bedarf für eine Vorbereitung, da wir rating als Eingabe verwenden
     }
 
     /**
@@ -46,9 +38,14 @@ class StoreVoteRequest extends FormRequest
     {
         $validated = parent::validated($key, $default);
 
-        // Wenn rating in den validierten Daten existiert, füge score als Alias hinzu
-        if (isset($validated['rating'])) {
+        // Einheitliches Handling für score - bevorzuge score wenn vorhanden
+        if (!isset($validated['score']) && isset($validated['rating'])) {
             $validated['score'] = $validated['rating'];
+        }
+
+        // rating entfernen, wenn es zusätzlich zu score existiert
+        if (isset($validated['rating'])) {
+            unset($validated['rating']);
         }
 
         return $validated;

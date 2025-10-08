@@ -104,3 +104,66 @@ LEFT JOIN votes v ON v.match_id = m.id
 GROUP BY u.id, u.name
 ORDER BY total_points DESC;
 ```
+# Challenge Roulette – Dev To‑Do Board
+
+## ✅ Done
+
+* Individuelles Ranking (User-Score über alle Wochen); Leaderboard-Route & View vorhanden.
+* Status-Flow konsistent: `created → in_progress → submitted → closed`; Vote-Policy erlaubt Voten erst bei `submitted`.
+* Participants als eigenes Modell, Relationen zu User/Team vorhanden.
+* Team-Generierung & Match-Erzeugung per Service/Controller; Matches werden persistent angelegt.
+
+---
+
+## ⛏️ To‑Do (Next Up)
+
+1. **Voting-Request vereinheitlichen**
+
+   * Formularfeld auf `name="score"` umstellen (statt `rating`) **oder** `VoteController@store(StoreVoteRequest $request, Matches $match)` verwenden und Request-Regeln auf `score` ausrichten.
+   * Ziel: einheitliche Benennung in View, Request, Controller, DB.
+
+2. **FormRequests konsequent nutzen**
+
+   * `MatchController@store` → `CreateChallengeRequest` injizieren, Inline-Validation entfernen.
+   * `MatchController@submitSolution` → `SubmitMatchRequest` injizieren, Inline-Validation entfernen.
+   * `VoteController@store` → `StoreVoteRequest` injizieren.
+
+3. **Dashboard/Listen auf aktuelle Woche filtern**
+
+   * `TeamAssignmentService::getCurrentWeekLabel()` verwenden.
+   * `MatchController@index` & Dashboard-Queries: `where('week_label', currentWeek)`.
+
+4. **Wochenwechsel / History**
+
+   * Command/Job: Am Wochenende `status='closed'` setzen (und optional `archived`).
+   * Dashboard zeigt nur `currentWeek` + `status != archived`.
+   * Separate History-Ansicht: vergangene `week_label` read-only listen.
+
+5. **Roulette-Animation integrieren**
+
+   * `resources/js/app.js`: Canvas/SVG-Animation (Spin, Hover, Click → Segment-Details).
+   * Optional GSAP/Easing, Livewire-Event bei Selection.
+
+6. **Guardrail: 1 Team pro User je Woche**
+
+   * In `TeamAssignmentService`: vor Insert checken, ob User schon in `participants` für `week_label` hängt; sonst überspringen/loggen.
+
+7. **Tests (Policies/Flows)**
+
+   * Vote-Policy: Creator-/Solver-Mitglieder dürfen nicht voten.
+   * Match-Submit: nur Solver + Status `in_progress`.
+   * Leaderboard: Punkte-Aggregation korrekt (Creator & Solver bekommen gleich viele Punkte).
+
+8. **UI-Badges vereinheitlichen**
+
+   * Eine Status-Menge final: `created, in_progress, submitted, closed`.
+   * Einheitliche Badge-Komponente (Tailwind/Blade Partial) und überall verwenden.
+
+---
+
+## 📝 Nice to Have / Later
+
+* Archiv-Export (CSV) pro Woche.
+* Submissions als eigene Tabelle (mehrere Artefakte + Metadaten).
+* Leaderboard: Tie-Breaker (Anzahl Votes), Pagination.
+* Admin-Panel für Week-Roll & Bulk-Assignments.

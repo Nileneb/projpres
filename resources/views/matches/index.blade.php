@@ -65,7 +65,7 @@
                                                     @if(!$match->votes()->where('user_id', auth()->id())->exists())
                                                         <form method="POST" action="{{ route('votes.store', $match) }}" class="inline-flex space-x-2">
                                                             @csrf
-                                                            <select name="rating" class="rounded-md border-gray-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white">
+                                                            <select name="score" class="rounded-md border-gray-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white">
                                                                 <option value="1">1 - Poor</option>
                                                                 <option value="2">2 - Fair</option>
                                                                 <option value="3">3 - Good</option>
