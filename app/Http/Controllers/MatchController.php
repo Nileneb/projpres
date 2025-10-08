@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Matches;
 use App\Models\Team;
+use App\Services\TimeService;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdateChallengeRequest;
 use App\Http\Requests\SubmitMatchRequest;
@@ -96,7 +97,7 @@ class MatchController extends Controller {
         return back()->with('success','Challenge updated');
     }
 
-    public function start(Matches $match) {
+    public function start(Matches $match, TimeService $timeService) {
         // Ensure the current user is from the solver team
         $user = request()->user();
         $isInSolverTeam = $user->teams()
@@ -114,18 +115,24 @@ class MatchController extends Controller {
                 ->with('error', 'This challenge cannot be started because it is already in progress or completed.');
         }
 
+        // Get the current time
+        $startTime = $timeService->current();
+
+        // Calculate the deadline
+        $deadline = $timeService->calculateDeadline($startTime, $match->time_limit_minutes);
+
         // Update the match status
         $match->update([
             'status' => 'in_progress',
-            'started_at' => now(),
-            'deadline' => now()->addMinutes($match->time_limit_minutes)
+            'started_at' => $startTime,
+            'deadline' => $deadline
         ]);
 
         return redirect()->route('matches.index')
             ->with('success', 'Challenge started! You have ' . $match->time_limit_minutes . ' minutes to complete it.');
     }
 
-    public function submitForm(Matches $match) {
+    public function submitForm(Matches $match, TimeService $timeService) {
         // Autorisierung mit Gate durchführen
         \Illuminate\Support\Facades\Gate::authorize('submit', $match);
 
@@ -135,15 +142,13 @@ class MatchController extends Controller {
         }
 
         // Prüfen, ob die Deadline überschritten wurde
-        if (now() > $match->deadline) {
-            return redirect()->route('matches.index')
-                ->with('error', 'Die Bearbeitungszeit ist abgelaufen. Die Lösung kann nicht mehr eingereicht werden.');
-        }
+        $now = $timeService->current();
+        abort_if($now->gt($match->deadline), 403, 'Die Bearbeitungszeit ist abgelaufen. Die Lösung kann nicht mehr eingereicht werden.');
 
         return view('matches.submit', compact('match'));
     }
 
-    public function submitSolution(SubmitMatchRequest $request, Matches $match) {
+    public function submitSolution(SubmitMatchRequest $request, Matches $match, TimeService $timeService) {
         // Autorisierung mit Gate durchführen
         \Illuminate\Support\Facades\Gate::authorize('submit', $match);
 
@@ -153,9 +158,8 @@ class MatchController extends Controller {
         }
 
         // Prüfen, ob die Deadline überschritten wurde
-        if (now() > $match->deadline) {
-            return back()->with('error', 'Die Bearbeitungszeit ist abgelaufen. Die Lösung kann nicht mehr eingereicht werden.');
-        }
+        $now = $timeService->current();
+        abort_if($now->gt($match->deadline), 403, 'Die Bearbeitungszeit ist abgelaufen. Die Lösung kann nicht mehr eingereicht werden.');
 
         // Team-Zuweisung Service laden
         $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
@@ -170,7 +174,7 @@ class MatchController extends Controller {
         $match->update([
             'submission_url' => $validated['submission_url'],
             'submission_notes' => $validated['submission_notes'] ?? null,
-            'submitted_at' => now(),
+            'submitted_at' => $timeService->current(),
             'status' => 'submitted'
         ]);
 

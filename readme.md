@@ -162,3 +162,27 @@ SESSION_SAME_SITE=lax
 - Ensure there are enough active users (at least 4)
 - If trying to regenerate teams, use the "Bestehende Teams überschreiben" option
 - Check user's `is_active` status in settings if they're not appearing in teams
+
+### Time Handling
+
+The application uses a centralized `TimeService` for all time-related operations:
+
+```php
+// Dependency injection in controllers/services
+public function myMethod(TimeService $timeService) {
+    $now = $timeService->current();
+    $weekLabel = $timeService->currentWeekLabel();
+}
+```
+
+Key features:
+- Timezone standardization (Europe/Berlin)
+- Week labels in ISO format (YYYY-KWnn)
+- Deadline calculation for challenges
+- Weekend detection for scheduled transitions
+
+Time settings are configured in multiple places:
+- `.env`: `APP_TIMEZONE=Europe/Berlin`
+- `config/app.php`: `'timezone' => env('APP_TIMEZONE', 'UTC')`
+- `app/Console/Kernel.php`: `protected $timezone = 'Europe/Berlin'`
+- `phpunit.xml`: `<env name="APP_TIMEZONE" value="Europe/Berlin"/>`

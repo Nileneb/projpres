@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\Participant;
 use App\Services\TeamAssignmentService;
+use App\Services\TimeService;
 use Illuminate\Support\Facades\DB;
 
 class WeeklyTransition extends Command
@@ -29,10 +30,10 @@ class WeeklyTransition extends Command
     /**
      * Execute the console command.
      */
-    public function handle(TeamAssignmentService $teamService)
+    public function handle(TeamAssignmentService $teamService, TimeService $timeService)
     {
         // Prüfe, ob es Wochenende ist (es sei denn, --force wurde verwendet)
-        $isWeekend = in_array(date('N'), [6, 7]); // 6 = Samstag, 7 = Sonntag
+        $isWeekend = $timeService->isWeekend();
 
         if (!$isWeekend && !$this->option('force')) {
             $this->error('Today is not weekend. Use --force to run anyway.');
@@ -45,7 +46,7 @@ class WeeklyTransition extends Command
         }
 
         // Aktuelle Woche holen
-        $currentWeekLabel = $teamService->getCurrentWeekLabel();
+        $currentWeekLabel = $timeService->currentWeekLabel();
         $this->info("Current week: {$currentWeekLabel}");
 
         // 1. Alle offenen Matches der aktuellen Woche auf 'closed' setzen
@@ -85,10 +86,7 @@ class WeeklyTransition extends Command
         }
 
         // Nächste Woche berechnen
-        $nextWeekDate = strtotime('+1 week');
-        $nextWeekYear = date('Y', $nextWeekDate);
-        $nextWeekNumber = date('W', $nextWeekDate);
-        $nextWeekLabel = "{$nextWeekYear}-KW{$nextWeekNumber}";
+        $nextWeekLabel = $timeService->nextWeekLabel();
 
         $this->info("Creating teams for next week: {$nextWeekLabel}");
 

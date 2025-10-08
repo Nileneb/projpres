@@ -8,9 +8,24 @@ use App\Models\Participant;
 use App\Models\Matches;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\TimeService;
 
 class TeamAssignmentService
 {
+    /**
+     * @var TimeService
+     */
+    protected $timeService;
+
+    /**
+     * Create a new TeamAssignmentService instance.
+     *
+     * @param TimeService $timeService
+     */
+    public function __construct(TimeService $timeService)
+    {
+        $this->timeService = $timeService;
+    }
     /**
      * Weist jedem Team ein Gegnerteam zu
      *
@@ -103,9 +118,7 @@ class TeamAssignmentService
      */
     public function getCurrentWeekLabel()
     {
-        $year = date('Y');
-        $weekNumber = date('W');
-        return "{$year}-KW{$weekNumber}";
+        return $this->timeService->currentWeekLabel();
     }
 
     /**
