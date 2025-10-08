@@ -12,27 +12,38 @@ use App\Http\Requests\SelectTeamRequest;
 
 class MatchController extends Controller {
     public function index() {
-        $matches = Matches::with(['creator', 'solver', 'votes'])->get();
-        return view('matches.index', compact('matches'));
+        $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
+        $currentWeek = $teamAssignmentService->getCurrentWeekLabel();
+        
+        $matches = Matches::where('week_label', $currentWeek)
+                    ->with(['creator', 'solver', 'votes'])
+                    ->get();
+                    
+        return view('matches.index', compact('matches', 'currentWeek'));
     }
 
     public function show(Matches $match){
         return view('matches.show', compact('match'));
     }
 
-    public function create(Request $request) {
+    /**
+     * Zeigt das Formular zur Auswahl eines Teams oder direkt das Erstellungsformular einer Challenge an
+     *
+     * @param Request $request Die allgemeine Request-Instanz
+     * @param SelectTeamRequest|null $selectRequest Optional, wird automatisch injiziert wenn Parameter vorhanden sind
+     * @return \Illuminate\View\View
+     */
+    public function create(Request $request, ?SelectTeamRequest $selectRequest = null) {
         // Get current week label and possible solver teams
         $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
         $weekLabel = $teamAssignmentService->getCurrentWeekLabel();
 
         // Get solver team if provided, otherwise show selection form
         if ($request->has('solver_team_id') && $request->has('week_label')) {
-            $request->validate([
-                'solver_team_id' => 'required|exists:teams,id',
-                'week_label' => 'required|string'
-            ]);
-            $solverTeam = Team::findOrFail($request->solver_team_id);
-            $weekLabel = $request->week_label;
+            // Wenn die Validierung fehlschlägt, wird automatisch zur vorherigen Seite zurückgeleitet
+            $validated = $selectRequest->validated();
+            $solverTeam = Team::findOrFail($validated['solver_team_id']);
+            $weekLabel = $validated['week_label'];
         } else {
             // Get all teams for the current week
             $solverTeams = Team::where('week_label', $weekLabel)->get();

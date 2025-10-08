@@ -14,7 +14,7 @@ class VoteController extends Controller {
         $user = \Illuminate\Support\Facades\Auth::user();
         Vote::updateOrCreate(
           ['match_id'=>$match->id,'user_id'=>$user->id],
-          ['score'=>$validated['rating']]
+          ['score'=>$validated['score']]
         );
 
         return back()->with('success', 'Vote submitted successfully!');
