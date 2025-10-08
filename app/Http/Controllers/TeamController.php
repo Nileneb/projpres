@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use Illuminate\Http\Request;
+use App\Http\Requests\ArchiveTeamRequest;
 
 class TeamController extends Controller {
     public function index(Request $request){
@@ -28,13 +29,10 @@ class TeamController extends Controller {
     /**
      * Archive a team or all teams from a specific week.
      */
-    public function archive(Request $request)
+    public function archive(ArchiveTeamRequest $request)
     {
-        // Validierung
-        $validated = $request->validate([
-            'team_id' => 'sometimes|integer|exists:teams,id',
-            'week_label' => 'sometimes|string',
-        ]);
+        // Validierung über FormRequest
+        $validated = $request->validated();
 
         if (isset($validated['team_id'])) {
             // Einzelnes Team archivieren

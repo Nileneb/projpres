@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UpdateChallengeRequest;
 use App\Http\Requests\SubmitMatchRequest;
 use App\Http\Requests\CreateChallengeRequest;
+use App\Http\Requests\SelectTeamRequest;
 
 class MatchController extends Controller {
     public function index() {
@@ -26,7 +27,7 @@ class MatchController extends Controller {
 
         // Get solver team if provided, otherwise show selection form
         if ($request->has('solver_team_id') && $request->has('week_label')) {
-            $validated = $request->validate([
+            $request->validate([
                 'solver_team_id' => 'required|exists:teams,id',
                 'week_label' => 'required|string'
             ]);
@@ -42,13 +43,8 @@ class MatchController extends Controller {
         return view('matches.create', compact('solverTeam', 'weekLabel', 'timeLimit'));
     }
 
-    public function store(Request $request) {
-        $validated = $request->validate([
-            'solver_team_id' => 'required|exists:teams,id',
-            'challenge_text' => 'required|string|min:10',
-            'time_limit_minutes' => 'required|integer|min:1|max:60',
-            'week_label' => 'required|string'
-        ]);
+    public function store(CreateChallengeRequest $request) {
+        $validated = $request->validated();
 
         // Finde das Team des aktuellen Benutzers für die angegebene Woche
         $user = request()->user();
@@ -127,7 +123,7 @@ class MatchController extends Controller {
         return view('matches.submit', compact('match'));
     }
 
-    public function submitSolution(Request $request, Matches $match) {
+    public function submitSolution(SubmitMatchRequest $request, Matches $match) {
         // Ensure the current user is from the solver team
         $user = request()->user();
         $isInSolverTeam = $user->teams()
@@ -147,9 +143,7 @@ class MatchController extends Controller {
             return back()->with('error', 'Dein Team hat bereits eine Challenge für diese Woche gelöst.');
         }
 
-        $validated = $request->validate([
-            'submission_url' => 'required|url'
-        ]);
+        $validated = $request->validated();
 
         $match->update([
             'submission_url' => $validated['submission_url'],

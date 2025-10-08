@@ -6,6 +6,7 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\Participant;
 use App\Services\TeamAssignmentService;
+use App\Http\Requests\GenerateTeamRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -37,17 +38,14 @@ class TeamAssignmentController extends Controller
     /**
      * Generiert neue Teams für die angegebene Woche
      */
-    public function generate(Request $request)
+    public function generate(GenerateTeamRequest $request)
     {
-        $validated = $request->validate([
-            'week_label' => 'required|string',
-            'team_size' => 'required|integer|min:2|max:10',
-        ]);
+        $validated = $request->validated();
 
         // Überprüfen, ob bereits Teams für diese Woche existieren
         $existingTeams = Team::where('week_label', $validated['week_label'])->exists();
 
-        if ($existingTeams && !$request->has('force')) {
+        if ($existingTeams && !isset($validated['force'])) {
             return back()->with('error', 'Für diese Woche existieren bereits Teams. Markiere "Bestehende Teams überschreiben", um fortzufahren.');
         }
 
@@ -55,7 +53,7 @@ class TeamAssignmentController extends Controller
 
         try {
             // Wenn "force" aktiviert ist, lösche alle bestehenden Teams für diese Woche
-            if ($request->has('force')) {
+            if (isset($validated['force'])) {
                 // Finde alle Team-IDs für diese Woche
                 $teamIds = Team::where('week_label', $validated['week_label'])->pluck('id')->toArray();
 

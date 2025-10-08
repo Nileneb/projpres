@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreVoteRequest;
 
 class VoteController extends Controller {
-    public function store(Request $request, Matches $match) {
+    public function store(StoreVoteRequest $request, Matches $match) {
         \Illuminate\Support\Facades\Gate::authorize('create', [Vote::class, $match]); // ← NEU
-        $data = $request->validate(['rating'=>'required|integer|min:1|max:5']);
+        $validated = $request->validated();
+        $user = \Illuminate\Support\Facades\Auth::user();
         Vote::updateOrCreate(
-          ['match_id'=>$match->id,'user_id'=>$request->user()->id],
-          ['score'=>$data['rating']]
+          ['match_id'=>$match->id,'user_id'=>$user->id],
+          ['score'=>$validated['rating']]
         );
 
         return back()->with('success', 'Vote submitted successfully!');

@@ -3,15 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class StoreVoteRequest extends FormRequest
+class GenerateTeamRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true; // Die eigentliche Autorisierung erfolgt im Controller mit $this->authorize()
+        return Gate::allows('manage-teams');
     }
 
     /**
@@ -22,8 +23,9 @@ class StoreVoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rating' => ['required', 'integer', 'min:1', 'max:5'],
-            'comment' => ['nullable', 'string'],
+            'week_label' => 'required|string',
+            'team_size' => 'required|integer|min:2|max:10',
+            'force' => 'sometimes|boolean',
         ];
     }
 }
