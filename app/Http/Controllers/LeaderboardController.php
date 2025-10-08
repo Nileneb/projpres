@@ -21,11 +21,11 @@ class LeaderboardController extends Controller
         // Get filter options
         $timeframe = $request->get('timeframe', 'all_time'); // 'all_time' or 'current_week'
         $includeArchived = $request->has('include_archived') && $request->include_archived == 1;
-        
+
         // Get current week label
         $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
         $currentWeekLabel = $teamAssignmentService->getCurrentWeekLabel();
-        
+
         // Base query builder
         $query = User::select('users.id', 'users.name', DB::raw('COALESCE(SUM(votes.score), 0) as total_points'))
             ->leftJoin('participants', 'participants.user_id', '=', 'users.id')
@@ -38,21 +38,21 @@ class LeaderboardController extends Controller
                     });
             })
             ->leftJoin('votes', 'votes.match_id', '=', 'matches.id');
-        
+
         // Apply filters
         if ($timeframe === 'current_week') {
             $query->where('matches.week_label', $currentWeekLabel);
         }
-        
+
         if (!$includeArchived) {
             $query->where('teams.is_archived', false);
         }
-        
+
         // Complete and execute the query
         $leaderboard = $query->groupBy('users.id', 'users.name')
             ->orderByDesc('total_points')
             ->get();
-        
+
         return view('leaderboard.index', compact('leaderboard', 'timeframe', 'includeArchived', 'currentWeekLabel'));
     }
 }

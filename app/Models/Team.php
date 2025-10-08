@@ -13,7 +13,7 @@ class Team extends Model
 {
     use HasFactory;
     protected $fillable = ['week_label', 'name', 'is_archived'];
-    
+
     /**
      * The attributes that should be cast.
      *
@@ -54,7 +54,7 @@ class Team extends Model
     {
         return $this->hasMany(MatchModel::class, 'solver_team_id');
     }
-    
+
     /**
      * Scope a query to only include active (non-archived) teams.
      *
@@ -65,7 +65,7 @@ class Team extends Model
     {
         return $query->where('is_archived', false);
     }
-    
+
     /**
      * Scope a query to only include archived teams.
      *
@@ -76,7 +76,7 @@ class Team extends Model
     {
         return $query->where('is_archived', true);
     }
-    
+
     /**
      * Archive this team.
      *
@@ -87,7 +87,7 @@ class Team extends Model
         $this->is_archived = true;
         return $this->save();
     }
-    
+
     /**
      * Unarchive this team.
      *
