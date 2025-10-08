@@ -24,6 +24,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Team routes
     Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+    Route::post('/teams/archive', [TeamController::class, 'archive'])
+        ->middleware(['can:manage-teams'])
+        ->name('teams.archive');
 
     // Team assignment routes
     Route::get('/teams/generate', [App\Http\Controllers\TeamAssignmentController::class, 'index'])
