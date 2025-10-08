@@ -28,7 +28,7 @@ return new class extends Migration
         Schema::table('matches', function (Blueprint $table) {
             // Revert the default value
             $table->string('status')->default('pending')->change();
-            
+
             // If you added a check constraint, remove it
             // DB::statement("ALTER TABLE matches DROP CONSTRAINT IF EXISTS check_valid_status");
         });
