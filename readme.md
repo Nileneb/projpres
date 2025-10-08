@@ -184,6 +184,18 @@ The application uses a centralized `TimeService` for all time-related operations
 public function myMethod(TimeService $timeService) {
     $now = $timeService->current();
     $weekLabel = $timeService->currentWeekLabel();
+    $nextWeek = $timeService->nextWeekLabel();
+    
+    // Deadline calculation for challenges
+    $deadline = $timeService->calculateDeadline($now, 20); // 20 minutes
+    
+    // Weekend check for scheduled transitions
+    if ($timeService->isWeekend()) {
+        // Run weekly transitions
+    }
+    
+    // Format dates in a consistent way
+    $formattedDate = $timeService->formatDate($now); // Default: d.m.Y H:i
 }
 ```
 
@@ -192,9 +204,21 @@ Key features:
 - Week labels in ISO format (YYYY-KWnn)
 - Deadline calculation for challenges
 - Weekend detection for scheduled transitions
+- Consistent date formatting
 
 Time settings are configured in multiple places:
 - `.env`: `APP_TIMEZONE=Europe/Berlin`
 - `config/app.php`: `'timezone' => env('APP_TIMEZONE', 'UTC')`
 - `app/Console/Kernel.php`: `protected $timezone = 'Europe/Berlin'`
 - `phpunit.xml`: `<env name="APP_TIMEZONE" value="Europe/Berlin"/>`
+
+For local development with scheduled tasks:
+```bash
+# Run the scheduler locally
+php artisan schedule:work
+```
+
+For production, add the scheduler to your crontab:
+```bash
+* * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
+```

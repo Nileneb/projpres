@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use App\Models\Matches;
 
 return new class extends Migration
@@ -12,28 +13,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Map old status values to new ones
-        $matches = Matches::all();
-        foreach ($matches as $match) {
-            switch ($match->status) {
-                case 'pending':
-                    $match->status = 'created';
-                    break;
-                case 'submitted':
-                    // Keep as is
-                    break;
-                case 'closed':
-                    // Keep as is
-                    break;
-                case 'completed':
-                    $match->status = 'submitted';
-                    break;
-                default:
-                    // Keep other values as they are
-                    break;
-            }
-            $match->save();
-        }
+        // Map old status values to new ones using direct DB queries (more performant)
+        Schema::disableForeignKeyConstraints();
+
+        // Update 'pending' to 'created'
+        DB::table('matches')
+            ->where('status', 'pending')
+            ->update(['status' => 'created']);
+
+        // Update 'completed' to 'submitted'
+        DB::table('matches')
+            ->where('status', 'completed')
+            ->update(['status' => 'submitted']);
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -41,21 +34,20 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Map new status values back to old ones
-        $matches = Matches::all();
-        foreach ($matches as $match) {
-            switch ($match->status) {
-                case 'created':
-                    $match->status = 'pending';
-                    break;
-                case 'submitted':
-                    $match->status = 'completed';
-                    break;
-                default:
-                    // Keep other values as they are
-                    break;
-            }
-            $match->save();
-        }
+        // Map new status values back to old ones using direct DB queries
+        Schema::disableForeignKeyConstraints();
+
+        // Revert 'created' back to 'pending'
+        DB::table('matches')
+            ->where('status', 'created')
+            ->update(['status' => 'pending']);
+
+        // Revert 'submitted' back to 'completed' (only those that were previously completed)
+        // Note: This is an estimation since we can't know for sure which 'submitted' were originally 'completed'
+        DB::table('matches')
+            ->where('status', 'submitted')
+            ->update(['status' => 'completed']);
+
+        Schema::enableForeignKeyConstraints();
     }
 };
