@@ -28,11 +28,12 @@ class TeamAssignmentController extends Controller
     {
         $currentWeekLabel = $this->teamAssignmentService->getCurrentWeekLabel();
         $users = User::all();
+        $activeUsers = User::where('is_active', true)->get();
 
         // Prüfen, ob es bereits Teams für diese Woche gibt
         $existingTeams = Team::where('week_label', $currentWeekLabel)->count();
 
-        return view('teams.generate', compact('currentWeekLabel', 'users', 'existingTeams'));
+        return view('teams.generate', compact('currentWeekLabel', 'users', 'activeUsers', 'existingTeams'));
     }
 
     /**
@@ -66,6 +67,11 @@ class TeamAssignmentController extends Controller
 
             // Nur aktive Benutzer abrufen
             $users = User::where('is_active', true)->get()->shuffle();
+
+            // Mindestens 4 aktive Benutzer erforderlich (2 Teams à 2 Personen)
+            if ($users->count() < 4 && !isset($validated['force'])) {
+                return back()->with('error', 'Es gibt zu wenige aktive Benutzer, um sinnvolle Teams zu erstellen. Mindestens 4 aktive Benutzer werden benötigt. Aktiviere "Bestehende Teams überschreiben", um trotzdem fortzufahren.');
+            }
 
             // Berechnen, wie viele Teams wir erstellen können
             $teamCount = ceil($users->count() / $validated['team_size']);

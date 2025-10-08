@@ -35,15 +35,21 @@
                                                     <a href="{{ $match->submission_url }}" target="_blank" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                                         View submission
                                                     </a>
-                                                <div class="flex items-center">
+                                                @endif
+
+                                                <div class="flex items-center mt-2">
                                                     <span class="font-semibold mr-2">Status:</span>
                                                     <x-match-status :status="$match->status" />
 
-                                                    @if($match->status == 'in_progress' && $match->solver_team_id == auth()->user()->teams->pluck('id')->contains($match->solver_team_id))
+                                                    @php
+                                                        $isInSolverTeam = auth()->user()->teams->contains($match->solver_team_id);
+                                                    @endphp
+
+                                                    @if($match->status == 'in_progress' && $isInSolverTeam)
                                                         <a href="{{ route('matches.submit', $match) }}" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                                             Submit Solution
                                                         </a>
-                                                    @elseif($match->status == 'created' && auth()->user()->teams->pluck('id')->contains($match->solver_team_id))
+                                                    @elseif($match->status == 'created' && $isInSolverTeam)
                                                         <form method="POST" action="{{ route('matches.start', $match) }}" class="inline">
                                                             @csrf
                                                             <button type="submit" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
@@ -52,7 +58,6 @@
                                                         </form>
                                                     @endif
                                                 </div>
-                                                @endif
                                             </div>
                                         </div>
                                         <div>

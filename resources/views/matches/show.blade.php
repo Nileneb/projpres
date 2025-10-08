@@ -23,9 +23,26 @@
                                 <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Solver:</span>
                                 <span class="ml-1 text-gray-800 dark:text-gray-200">{{ $match->solver->name }}</span>
                             </div>
-                            <div>
-                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status:</span>
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mr-1">Status:</span>
                                 <x-match-status :status="$match->status" />
+
+                                @php
+                                    $isInSolverTeam = auth()->user()->teams->contains($match->solver_team_id);
+                                @endphp
+
+                                @if($match->status == 'in_progress' && $isInSolverTeam)
+                                    <a href="{{ route('matches.submit', $match) }}" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                                        Submit Solution
+                                    </a>
+                                @elseif($match->status == 'created' && $isInSolverTeam)
+                                    <form method="POST" action="{{ route('matches.start', $match) }}" class="inline">
+                                        @csrf
+                                        <button type="submit" class="ml-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                                            Start Challenge
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
 

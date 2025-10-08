@@ -128,6 +128,12 @@ class MatchController extends Controller {
             abort(403, 'Cannot submit solution if match not in progress');
         }
 
+        // Prüfen, ob die Deadline überschritten wurde
+        if (now() > $match->deadline) {
+            return redirect()->route('matches.index')
+                ->with('error', 'Die Bearbeitungszeit ist abgelaufen. Die Lösung kann nicht mehr eingereicht werden.');
+        }
+
         return view('matches.submit', compact('match'));
     }
 

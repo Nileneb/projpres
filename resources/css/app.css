@@ -24,8 +24,10 @@
     --color-zinc-950: #0a0a0a;
 
     /* Status colors */
-    --color-status-pending-bg: #fdf6b2;
-    --color-status-pending-text: #723b13;
+    --color-status-created-bg: #fdf6b2;
+    --color-status-created-text: #723b13;
+    --color-status-in_progress-bg: #fde68a;
+    --color-status-in_progress-text: #b45309;
     --color-status-submitted-bg: #def7ec;
     --color-status-submitted-text: #046c4e;
     --color-status-closed-bg: #e5e7eb;
@@ -43,8 +45,10 @@
         --color-accent-foreground: var(--color-neutral-800);
 
         /* Status colors for dark mode */
-        --color-status-pending-bg: #544a00;
-        --color-status-pending-text: #fde68a;
+        --color-status-created-bg: #544a00;
+        --color-status-created-text: #fde68a;
+        --color-status-in_progress-bg: #713f12;
+        --color-status-in_progress-text: #fcd34d;
         --color-status-submitted-bg: #064e3b;
         --color-status-submitted-text: #a7f3d0;
         --color-status-closed-bg: #374151;

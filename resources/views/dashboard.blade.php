@@ -95,12 +95,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <span class="px-2.5 py-1 text-xs font-medium rounded-full
-                                            {{ $match->status == 'submitted' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                                               ($match->status == 'in_progress' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                                               'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200') }}">
-                                            {{ ucfirst($match->status) }}
-                                        </span>
+                                        <x-match-status :status="$match->status" />
                                         <div class="mt-2">
                                             <a href="{{ route('matches.show', $match) }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
                                                 Details →
@@ -150,10 +145,21 @@
                                         <x-match-status :status="$match->status" />
 
                                         <div class="mt-2 flex justify-end">
-                                            @if($match->status == 'created')
+                                            @php
+                                                $isInSolverTeam = auth()->user()->teams->contains($match->solver_team_id);
+                                            @endphp
+
+                                            @if($match->status == 'in_progress' && $isInSolverTeam)
                                                 <a href="{{ route('matches.submit', $match) }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline mr-2">
                                                     Submit →
                                                 </a>
+                                            @elseif($match->status == 'created' && $isInSolverTeam)
+                                                <form method="POST" action="{{ route('matches.start', $match) }}" class="inline mr-2">
+                                                    @csrf
+                                                    <button type="submit" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                                                        Start →
+                                                    </button>
+                                                </form>
                                             @endif
                                             <a href="{{ route('matches.show', $match) }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
                                                 Details →

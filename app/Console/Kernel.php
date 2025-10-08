@@ -8,15 +8,21 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
+     * The application's timezone.
+     *
+     * @var string
+     */
+    protected $timezone = 'Europe/Berlin';
+
+    /**
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Wöchentliche Transition jeden Sonntag um Mitternacht ausführen (Europe/Berlin Timezone)
+        // Wöchentliche Transition jeden Sonntag um Mitternacht ausführen
         $schedule->command('app:weekly-transition')
             ->sundays()
-            ->at('00:00')
-            ->timezone('Europe/Berlin');
+            ->at('00:00');
     }
 
     /**
