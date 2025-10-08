@@ -94,7 +94,7 @@ class TeamAssignmentController extends Controller
 
             // Gegner-Teams zuweisen
             $assignments = $this->teamAssignmentService->assignOpponents($validated['week_label']);
-            
+
             // Create matches for each team pair
             if ($assignments['success']) {
                 foreach ($assignments['assignments'] as $pair) {

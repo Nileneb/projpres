@@ -23,7 +23,7 @@ class MatchController extends Controller {
         // Get current week label and possible solver teams
         $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
         $weekLabel = $teamAssignmentService->getCurrentWeekLabel();
-        
+
         // Get solver team if provided, otherwise show selection form
         if ($request->has('solver_team_id') && $request->has('week_label')) {
             $validated = $request->validate([
