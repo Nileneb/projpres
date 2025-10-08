@@ -19,9 +19,12 @@ Route::view('dashboard', 'dashboard')
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
-    Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
-    Volt::route('settings/password', 'settings.password')->name('password.edit');
-    Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');
+    Route::get('settings/profile', [App\Http\Controllers\SettingsController::class, 'profile'])->name('profile.edit');
+    Route::patch('settings/profile', [App\Http\Controllers\SettingsController::class, 'updateProfile'])->name('profile.update');
+    Route::delete('settings/profile', [App\Http\Controllers\SettingsController::class, 'destroy'])->name('profile.destroy');
+    Route::get('settings/password', [App\Http\Controllers\SettingsController::class, 'password'])->name('password.edit');
+    Route::put('settings/password', [App\Http\Controllers\SettingsController::class, 'updatePassword'])->name('password.update');
+    Route::get('settings/appearance', [App\Http\Controllers\SettingsController::class, 'appearance'])->name('appearance.edit');
 
     // Team routes
     Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
