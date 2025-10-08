@@ -14,11 +14,11 @@ class MatchController extends Controller {
     public function index() {
         $teamAssignmentService = app(\App\Services\TeamAssignmentService::class);
         $currentWeek = $teamAssignmentService->getCurrentWeekLabel();
-        
+
         $matches = Matches::where('week_label', $currentWeek)
                     ->with(['creator', 'solver', 'votes'])
                     ->get();
-                    
+
         return view('matches.index', compact('matches', 'currentWeek'));
     }
 
