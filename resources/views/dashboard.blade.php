@@ -1,5 +1,9 @@
 <x-layouts.app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 rou                                                @php
+                                                    $now = $timeService->current();
+                                                    $deadline = $receivedChallenge->deadline;
+                                                    $remainingTime = $now->diffInMinutes($deadline, false);
+                                                @endphpxl">
         <div class="grid auto-rows-min gap-4 md:grid-cols-4">
             <a href="{{ route('teams.index') }}" class="flex flex-col items-center justify-center aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800">
                 <svg xmlns="http://www.w3.org/2000/svg" class="size-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

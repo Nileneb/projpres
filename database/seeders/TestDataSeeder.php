@@ -48,10 +48,9 @@ class TestDataSeeder extends Seeder
         $users = User::factory()->count(11)->create();
         $allUsers = collect([$admin])->merge($users);
 
-        // Aktuelle Woche festlegen (auf aktuelle Kalenderwoche, falls konfigurierbar)
-        $weekNumber = date('W');
-        $year = date('Y');
-        $weekLabel = $year . '-KW' . $weekNumber;
+        // TimeService für Zeitfunktionen nutzen
+        $timeService = app(\App\Services\TimeService::class);
+        $weekLabel = $timeService->currentWeekLabel();
 
         // Alternative: Falls ein fixer Wert für Tests bevorzugt wird
         // $weekLabel = '2025-KW38';
