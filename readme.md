@@ -1,27 +1,27 @@
 # Weekly Mini-Game Platform
 
 A Laravel 12 + Livewire application for student team challenges.  
-Built as part of the *Grundlagen Programmieren – Datenbank Modell* assignment.
+Built as part of the _Grundlagen Programmieren – Datenbank Modell_ assignment.
 
 ---
 
 ## 🎯 Concept
 
-- Every **week** (`week_label`) students are assigned randomly to **teams** (4 members each).
-- Each team **creates one challenge** and **solves another team's challenge** within **20 minutes**.
-- **Submissions** (e.g. link, file URL) are uploaded by the solver team.
-- Afterwards, all **other users** can **vote (1–5)** and leave a comment.
-- **Scoring rule**: creator and solver teams both receive the same points based on votes.
+-   Every **week** (`week_label`) students are assigned randomly to **teams** (4 members each).
+-   Each team **creates one challenge** and **solves another team's challenge** within **20 minutes**.
+-   **Submissions** (e.g. link, file URL) are uploaded by the solver team.
+-   Afterwards, all **other users** can **vote (1–5)** and leave a comment.
+-   **Scoring rule**: creator and solver teams both receive the same points based on votes.
 
 ---
 
 ## 🗄 Database Schema (5 Models incl. `User`)
 
-- **users** – authentication (Breeze + Livewire).
-- **teams** – groups of 4 per `week_label`.
-- **participants** – link table (User ↔ Team), treated as model (`role`, timestamps).
-- **matches** – one challenge per creator/solver team pair; tracks challenge text, submission, status.
-- **votes** – 1 vote per user per match (excluding creator/solver teams).
+-   **users** – authentication (Breeze + Livewire).
+-   **teams** – groups of 4 per `week_label`.
+-   **participants** – link table (User ↔ Team), treated as model (`role`, timestamps).
+-   **matches** – one challenge per creator/solver team pair; tracks challenge text, submission, status.
+-   **votes** – 1 vote per user per match (excluding creator/solver teams).
 
 ---
 
@@ -31,8 +31,8 @@ Built as part of the *Grundlagen Programmieren – Datenbank Modell* assignment.
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/challenge-roulette.git
-cd challenge-roulette
+git clone https://github.com/nileneb/projpres.git
+cd projpres
 
 # Install dependencies
 composer install
@@ -79,9 +79,10 @@ php artisan schedule:work
 ```
 
 The weekly command performs these actions:
-- Closes all open matches from the current week
-- Archives current teams
-- Prepares for the next week
+
+-   Closes all open matches from the current week
+-   Archives current teams
+-   Prepares for the next week
 
 This task is scheduled to run every Sunday at midnight (Europe/Berlin timezone).
 
@@ -105,15 +106,17 @@ php artisan db:seed --class=UserSeeder
 ### Match Status Flow
 
 Matches follow this status flow:
+
 ```
 created → in_progress → submitted → closed
 ```
 
 Each status represents a different stage in the challenge lifecycle:
-- **created**: Initial state when a challenge is first created
-- **in_progress**: When a solver team starts working on the challenge
-- **submitted**: When the solver team has submitted their solution
-- **closed**: When voting period has ended (managed by admin)
+
+-   **created**: Initial state when a challenge is first created
+-   **in_progress**: When a solver team starts working on the challenge
+-   **submitted**: When the solver team has submitted their solution
+-   **closed**: When voting period has ended (managed by admin)
 
 > **Note for Developers**: The migrations have been updated to use 'created' as the default status value for new challenges. If you're upgrading from an older version, the migrations will automatically convert any 'pending' status values to 'created'.
 
@@ -137,23 +140,28 @@ Gate::define('manage-teams', function (User $user) {
 ```
 
 Admin users can:
-- Generate teams for new weeks
-- Archive teams (individually or by week)
-- Access team management features
-- Run the weekly transition manually
+
+-   Generate teams for new weeks
+-   Archive teams (individually or by week)
+-   Access team management features
+-   Run the weekly transition manually
 
 ### Archive Functionality
 
 #### Archiving Teams
+
 Teams can be archived by admins to maintain a clean workspace:
-- Archive individual teams from the Teams page
-- Archive all teams from a specific week
+
+-   Archive individual teams from the Teams page
+-   Archive all teams from a specific week
 
 #### Archive Filters
+
 Both the Leaderboard and History views include archive filters:
-- Toggle "Show archived teams" to include/exclude archived content
-- History view shows visual indicators (amber border) for archived teams
-- Leaderboard can filter scores from archived teams
+
+-   Toggle "Show archived teams" to include/exclude archived content
+-   History view shows visual indicators (amber border) for archived teams
+-   Leaderboard can filter scores from archived teams
 
 ---
 
@@ -171,9 +179,9 @@ SESSION_SAME_SITE=lax
 
 ### Team Generation Issues
 
-- Ensure there are enough active users (at least 4)
-- If trying to regenerate teams, use the "Bestehende Teams überschreiben" option
-- Check user's `is_active` status in settings if they're not appearing in teams
+-   Ensure there are enough active users (at least 4)
+-   If trying to regenerate teams, use the "Bestehende Teams überschreiben" option
+-   Check user's `is_active` status in settings if they're not appearing in teams
 
 ### Time Handling
 
@@ -185,40 +193,44 @@ public function myMethod(TimeService $timeService) {
     $now = $timeService->current();
     $weekLabel = $timeService->currentWeekLabel();
     $nextWeek = $timeService->nextWeekLabel();
-    
+
     // Deadline calculation for challenges
     $deadline = $timeService->calculateDeadline($now, 20); // 20 minutes
-    
+
     // Weekend check for scheduled transitions
     if ($timeService->isWeekend()) {
         // Run weekly transitions
     }
-    
+
     // Format dates in a consistent way
     $formattedDate = $timeService->formatDate($now); // Default: d.m.Y H:i
 }
 ```
 
 Key features:
-- Timezone standardization (Europe/Berlin)
-- Week labels in ISO format (YYYY-KWnn)
-- Deadline calculation for challenges
-- Weekend detection for scheduled transitions
-- Consistent date formatting
+
+-   Timezone standardization (Europe/Berlin)
+-   Week labels in ISO format (YYYY-KWnn)
+-   Deadline calculation for challenges
+-   Weekend detection for scheduled transitions
+-   Consistent date formatting
 
 Time settings are configured in multiple places:
-- `.env`: `APP_TIMEZONE=Europe/Berlin`
-- `config/app.php`: `'timezone' => env('APP_TIMEZONE', 'UTC')`
-- `app/Console/Kernel.php`: `protected $timezone = 'Europe/Berlin'`
-- `phpunit.xml`: `<env name="APP_TIMEZONE" value="Europe/Berlin"/>`
+
+-   `.env`: `APP_TIMEZONE=Europe/Berlin`
+-   `config/app.php`: `'timezone' => env('APP_TIMEZONE', 'UTC')`
+-   `app/Console/Kernel.php`: `protected $timezone = 'Europe/Berlin'`
+-   `phpunit.xml`: `<env name="APP_TIMEZONE" value="Europe/Berlin"/>`
 
 For local development with scheduled tasks:
+
 ```bash
 # Run the scheduler locally
 php artisan schedule:work
 ```
 
 For production, add the scheduler to your crontab:
+
 ```bash
 * * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
 ```

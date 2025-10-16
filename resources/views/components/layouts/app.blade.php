@@ -18,10 +18,10 @@
         @fluxAppearance
     </head>
     <body class="min-h-screen bg-white antialiased dark:bg-zinc-800">
-        <div class="flex min-h-screen overflow-hidden">
+    <div class="flex min-h-screen">
             <!-- Sidebar -->
             <aside class="w-64 flex-shrink-0 border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-                <div class="sticky top-0 h-screen overflow-y-auto p-4">
+                <div class="h-screen overflow-y-auto p-4 flex flex-col">
                     <a href="{{ route('dashboard') }}" class="mb-5 flex items-center space-x-2 rtl:space-x-reverse">
                         <x-ui.brand variant="sidebar" />
                     </a>
@@ -114,8 +114,8 @@
             </aside>
 
             <!-- Main Content -->
-            <main class="flex-1 relative overflow-y-auto">
-                <div class="p-6 md:p-8">
+            <main class="flex-1 min-w-0 bg-white dark:bg-zinc-800 overflow-y-auto">
+                <div class="p-6 md:p-8 max-w-5xl mx-auto w-full">
                     {{ $slot }}
                 </div>
             </main>
